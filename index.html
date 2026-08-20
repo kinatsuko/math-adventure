@@ -1,0 +1,3446 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Math Adventure Tahun 6</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #dbeafe, #fef3c7);
+    min-height: 100vh;
+    color: #1f2937;
+}
+
+.container {
+    max-width: 1150px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* =========================
+HEADER
+========================= */
+
+.header {
+    background: white;
+    border-radius: 22px;
+    padding: 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.08);
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title {
+    font-size: 30px;
+    font-weight: 800;
+}
+
+.subtitle {
+    color: #6b7280;
+    margin-top: 5px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.stat {
+    background: #f3f4f6;
+    padding: 14px;
+    border-radius: 14px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.stat span {
+    color: #2563eb;
+    font-size: 20px;
+}
+
+/* =========================
+PLAYER
+========================= */
+
+.player-box {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.07);
+}
+
+.player-box input {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #d1d5db;
+    border-radius: 12px;
+    font-size: 16px;
+    margin-top: 8px;
+}
+
+.player-box button {
+    margin-top: 10px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* =========================
+MAP
+========================= */
+
+.map {
+    background: white;
+    border-radius: 22px;
+    padding: 25px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.08);
+}
+
+.map h2 {
+    margin-bottom: 20px;
+}
+
+.world-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.world {
+    background: #f9fafb;
+    border: 3px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.world:hover {
+    transform: translateY(-5px);
+}
+
+.world.locked {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+.world.completed {
+    background: #f0fdf4;
+    border-color: #22c55e;
+}
+
+.world-icon {
+    font-size: 45px;
+}
+
+.world-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+.world-status {
+    margin-top: 8px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+/* =========================
+STAGE MENU
+========================= */
+
+.stage-menu {
+    display: none;
+    background: white;
+    border-radius: 22px;
+    padding: 30px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.08);
+}
+
+.stage-menu.active {
+    display: block;
+}
+
+.stage-title {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 25px;
+}
+
+.stage-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.stage {
+    border-radius: 20px;
+    padding: 25px;
+    text-align: center;
+    cursor: pointer;
+    border: 3px solid #e5e7eb;
+    transition: .2s;
+}
+
+.stage:hover {
+    transform: translateY(-5px);
+}
+
+.easy {
+    background: #f0fdf4;
+    border-color: #22c55e;
+}
+
+.medium {
+    background: #fffbeb;
+    border-color: #f59e0b;
+}
+
+.boss {
+    background: #fef2f2;
+    border-color: #ef4444;
+}
+
+.stage.locked {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+.stage.completed {
+    box-shadow: 0 0 0 4px #22c55e;
+}
+
+.stage-icon {
+    font-size: 50px;
+}
+
+.stage-name {
+    font-size: 22px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.stage-info {
+    color: #6b7280;
+}
+
+/* =========================
+GAME
+========================= */
+
+.game {
+    display: none;
+    background: white;
+    border-radius: 22px;
+    padding: 30px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.08);
+}
+
+.game.active {
+    display: block;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.question-number {
+    color: #6b7280;
+    margin-top: 5px;
+}
+
+.difficulty {
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.difficulty.easy {
+    color: #166534;
+}
+
+.difficulty.medium {
+    color: #92400e;
+}
+
+.difficulty.boss {
+    color: #991b1b;
+}
+
+.question {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    margin: 40px 0;
+    line-height: 1.5;
+}
+
+.answers {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.answer {
+    padding: 18px;
+    border: 2px solid #d1d5db;
+    background: white;
+    border-radius: 15px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.answer:hover {
+    background: #eff6ff;
+    border-color: #2563eb;
+}
+
+.answer.correct {
+    background: #dcfce7;
+    border-color: #22c55e;
+}
+
+.answer.wrong {
+    background: #fee2e2;
+    border-color: #ef4444;
+}
+
+.answer:disabled {
+    cursor: not-allowed;
+}
+
+.feedback {
+    min-height: 35px;
+    text-align: center;
+    margin: 20px 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.game-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    border: none;
+    padding: 13px 22px;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-next {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-hint {
+    background: #facc15;
+    color: #713f12;
+}
+
+.btn-map {
+    background: #e5e7eb;
+}
+
+/* =========================
+HINT
+========================= */
+
+.hint-box {
+    display: none;
+    background: #fffbeb;
+    border: 2px solid #facc15;
+    padding: 15px;
+    border-radius: 12px;
+    margin: 15px 0;
+    text-align: center;
+}
+
+.hint-box.show {
+    display: block;
+}
+
+/* =========================
+RESULT
+========================= */
+
+.result {
+    display: none;
+    background: white;
+    border-radius: 22px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0,0,0,.08);
+}
+
+.result.active {
+    display: block;
+}
+
+.result-icon {
+    font-size: 80px;
+}
+
+.result h2 {
+    font-size: 32px;
+    margin: 15px 0;
+}
+
+.result-score {
+    font-size: 24px;
+    margin: 15px;
+}
+
+.result-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+/* =========================
+PROGRESS
+========================= */
+
+.progress-container {
+    margin-top: 15px;
+}
+
+.progress {
+    height: 12px;
+    background: #e5e7eb;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #2563eb;
+    transition: .4s;
+}
+
+/* =========================
+BADGE
+========================= */
+
+.badge {
+    display: inline-block;
+    background: #fef3c7;
+    border: 2px solid #f59e0b;
+    padding: 10px 15px;
+    border-radius: 20px;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+/* =========================
+RESPONSIVE
+========================= */
+
+@media(max-width: 800px) {
+
+    .world-grid,
+    .stage-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 550px) {
+
+    .world-grid,
+    .stage-grid,
+    .answers {
+        grid-template-columns: 1fr;
+    }
+
+    .title {
+        font-size: 23px;
+    }
+
+    .question {
+        font-size: 22px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- =========================
+HEADER
+========================= -->
+
+<div class="header">
+
+    <div class="header-top">
+
+        <div>
+            <div class="title">
+                🧮 Math Adventure Tahun 6
+            </div>
+
+            <div class="subtitle">
+                Belajar • Bermain • Naik Level • Jadi Math Champion
+            </div>
+        </div>
+
+    </div>
+
+    <div class="stats">
+
+        <div class="stat">
+            ⭐ XP
+            <br>
+            <span id="xp">0</span>
+        </div>
+
+        <div class="stat">
+            🏆 Skor
+            <br>
+            <span id="score">0</span>
+        </div>
+
+        <div class="stat">
+            ❤️ Nyawa
+            <br>
+            <span id="lives">3</span>
+        </div>
+
+        <div class="stat">
+            🆙 Level
+            <br>
+            <span id="level">1</span>
+        </div>
+
+    </div>
+
+    <div class="progress-container">
+
+        <strong>Progress Dunia</strong>
+
+        <div class="progress">
+            <div
+                class="progress-bar"
+                id="progressBar">
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+PLAYER
+========================= -->
+
+<div class="player-box">
+
+    <strong>👨‍🎓 Nama Murid</strong>
+
+    <input
+        type="text"
+        id="playerName"
+        placeholder="Masukkan nama murid"
+    >
+
+    <button onclick="savePlayer()">
+        💾 Simpan Nama
+    </button>
+
+    <span id="playerMessage"></span>
+
+</div>
+
+
+<!-- =========================
+WORLD MAP
+========================= -->
+
+<div class="map" id="map">
+
+    <h2>🗺️ Peta Math Adventure</h2>
+
+    <div
+        class="world-grid"
+        id="worldGrid">
+    </div>
+
+</div>
+
+
+<!-- =========================
+STAGE MENU
+========================= -->
+
+<div
+    class="stage-menu"
+    id="stageMenu">
+
+    <h2
+        class="stage-title"
+        id="stageTitle">
+    </h2>
+
+    <div
+        class="stage-grid"
+        id="stageGrid">
+    </div>
+
+    <br>
+
+    <div style="text-align:center">
+
+        <button
+            class="btn btn-map"
+            onclick="backToMap()">
+
+            ← Kembali ke Peta
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+GAME
+========================= -->
+
+<div
+    class="game"
+    id="game">
+
+    <div class="game-header">
+
+        <div>
+
+            <h2 id="gameWorldTitle">
+            </h2>
+
+            <div
+                class="question-number"
+                id="questionNumber">
+            </div>
+
+        </div>
+
+        <div
+            class="difficulty"
+            id="difficulty">
+        </div>
+
+    </div>
+
+
+    <div
+        class="question"
+        id="question">
+    </div>
+
+
+    <div
+        class="answers"
+        id="answers">
+    </div>
+
+
+    <div
+        class="feedback"
+        id="feedback">
+    </div>
+
+
+    <div
+        class="hint-box"
+        id="hintBox">
+    </div>
+
+
+    <div class="game-buttons">
+
+        <button
+            class="btn btn-hint"
+            onclick="showHint()">
+
+            💡 Hint
+
+        </button>
+
+        <button
+            class="btn btn-next"
+            id="nextBtn"
+            onclick="nextQuestion()"
+            style="display:none">
+
+            Seterusnya →
+
+        </button>
+
+        <button
+            class="btn btn-map"
+            onclick="backToMap()">
+
+            🗺️ Peta
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+RESULT
+========================= -->
+
+<div
+    class="result"
+    id="result">
+
+    <div
+        class="result-icon"
+        id="resultIcon">
+        🏆
+    </div>
+
+    <h2 id="resultTitle">
+        Tahniah!
+    </h2>
+
+    <div class="result-score">
+
+        Skor:
+        <strong id="finalScore">
+            0
+        </strong>
+
+    </div>
+
+    <div>
+
+        ⭐ XP:
+        <strong id="finalXP">
+            0
+        </strong>
+
+    </div>
+
+    <div
+        id="resultMessage"
+        style="margin-top:15px">
+    </div>
+
+    <div
+        class="badge"
+        id="badge">
+    </div>
+
+    <div class="result-buttons">
+
+        <button
+            class="btn btn-next"
+            id="continueBtn"
+            onclick="continueAdventure()">
+
+            ➡️ Teruskan
+
+        </button>
+
+        <button
+            class="btn btn-map"
+            onclick="backToMap()">
+
+            🗺️ Peta
+
+        </button>
+
+    </div>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+/* =========================================================
+DATA WORLD
+========================================================= */
+
+const worlds = [
+
+{
+    id: 1,
+    icon: "🔢",
+    name: "Dunia Nombor",
+
+    easy: [
+
+        {
+            q: "Apakah nilai digit 5 dalam 35,621?",
+            a: ["5", "50", "500", "5,000"],
+            correct: 3,
+            hint: "Digit 5 berada di tempat ribu."
+        },
+
+        {
+            q: "Berapakah 10,000 + 5,000?",
+            a: ["15,000", "14,000", "16,000", "10,500"],
+            correct: 0,
+            hint: "Tambah 10 ribu dengan 5 ribu."
+        },
+
+        {
+            q: "Apakah nombor terbesar?",
+            a: ["4,123", "4,321", "4,213", "4,312"],
+            correct: 1,
+            hint: "Bandingkan digit dari kiri."
+        },
+
+        {
+            q: "Berapakah 5,000 + 2,000?",
+            a: ["6,000", "7,000", "8,000", "9,000"],
+            correct: 1,
+            hint: "5 ribu tambah 2 ribu."
+        },
+
+        {
+            q: "Apakah nilai tempat digit 7 dalam 27,456?",
+            a: ["Ribu", "Puluh ribu", "Ratus", "Puluh"],
+            correct: 0,
+            hint: "Lihat kedudukan 7 dari kanan."
+        }
+
+    ],
+
+    medium: [
+
+        {
+            q: "Bundarkan 45,678 kepada ribu terdekat.",
+            a: ["45,000", "46,000", "45,700", "50,000"],
+            correct: 1,
+            hint: "Lihat digit ratus."
+        },
+
+        {
+            q: "Apakah nombor 6 digit paling kecil?",
+            a: ["10,000", "100,000", "999,999", "1,000"],
+            correct: 1,
+            hint: "Nombor 6 digit bermula pada 100,000."
+        },
+
+        {
+            q: "35,000 + 7,500 = ?",
+            a: ["41,500", "42,500", "43,500", "44,500"],
+            correct: 1,
+            hint: "Tambah ribu dan ratus."
+        },
+
+        {
+            q: "90,000 − 25,000 = ?",
+            a: ["55,000", "60,000", "65,000", "75,000"],
+            correct: 2,
+            hint: "90 − 25."
+        },
+
+        {
+            q: "Apakah nombor selepas 99,999?",
+            a: ["99,998", "100,000", "100,001", "99,000"],
+            correct: 1,
+            hint: "Tambah 1."
+        }
+
+    ],
+
+    boss: [
+
+        {
+            q: "Sebuah nombor mempunyai 6 digit. Digit ratus ribu ialah 4 dan digit puluh ribu ialah 7. Apakah nombor paling kecil yang boleh dibentuk?",
+            a: ["470,000", "407,000", "400,700", "470,001"],
+            correct: 1,
+            hint: "Gunakan digit lain sebagai 0."
+        },
+
+        {
+            q: "Apakah beza antara 125,000 dan 78,500?",
+            a: ["45,500", "46,500", "47,500", "48,500"],
+            correct: 2,
+            hint: "125,000 − 78,500."
+        },
+
+        {
+            q: "Sebuah kilang menghasilkan 25,000 barang setiap bulan. Berapa barang dalam 4 bulan?",
+            a: ["50,000", "75,000", "100,000", "125,000"],
+            correct: 2,
+            hint: "25,000 × 4."
+        },
+
+        {
+            q: "Nombor A ialah 35,000. Nombor B adalah 7,500 lebih besar. Apakah B?",
+            a: ["40,500", "41,500", "42,500", "43,500"],
+            correct: 2,
+            hint: "35,000 + 7,500."
+        },
+
+        {
+            q: "Ali mempunyai 100,000 mata. Dia menggunakan 37,500 mata. Berapa tinggal?",
+            a: ["62,500", "63,500", "64,500", "67,500"],
+            correct: 0,
+            hint: "100,000 − 37,500."
+        }
+
+    ]
+},
+
+{
+    id: 2,
+    icon: "➕",
+    name: "Dunia Operasi",
+
+    easy: [
+
+        {
+            q: "345 + 276 = ?",
+            a: ["611", "621", "631", "641"],
+            correct: 1,
+            hint: "Tambah dari sa hingga ribu."
+        },
+
+        {
+            q: "800 − 365 = ?",
+            a: ["425", "435", "445", "455"],
+            correct: 1,
+            hint: "Tolak 365 daripada 800."
+        },
+
+        {
+            q: "24 × 6 = ?",
+            a: ["124", "134", "144", "154"],
+            correct: 2,
+            hint: "24 + 24 + 24 + 24 + 24 + 24."
+        },
+
+        {
+            q: "144 ÷ 12 = ?",
+            a: ["10", "11", "12", "14"],
+            correct: 2,
+            hint: "12 × ? = 144."
+        },
+
+        {
+            q: "25 + 35 = ?",
+            a: ["50", "60", "70", "80"],
+            correct: 1,
+            hint: "Tambah 25 dan 35."
+        }
+
+    ],
+
+    medium: [
+
+        {
+            q: "125 + 45 × 2 = ?",
+            a: ["215", "300", "250", "170"],
+            correct: 0,
+            hint: "Darab dahulu."
+        },
+
+        {
+            q: "600 ÷ 5 + 20 = ?",
+            a: ["120", "130", "140", "150"],
+            correct: 1,
+            hint: "Bahagi dahulu."
+        },
+
+        {
+            q: "45 × 8 = ?",
+            a: ["320", "340", "360", "380"],
+            correct: 2,
+            hint: "40 × 8 + 5 × 8."
+        },
+
+        {
+            q: "900 − 250 + 50 = ?",
+            a: ["600", "650", "700", "750"],
+            correct: 2,
+            hint: "Kira dari kiri."
+        },
+
+        {
+            q: "720 ÷ 8 = ?",
+            a: ["80", "90", "100", "110"],
+            correct: 1,
+            hint: "8 × 90."
+        }
+
+    ],
+
+    boss: [
+
+        {
+            q: "Sebuah kedai mempunyai 125 kotak. Setiap kotak mengandungi 8 pensel. Berapa jumlah pensel?",
+            a: ["800", "900", "1,000", "1,200"],
+            correct: 2,
+            hint: "125 × 8."
+        },
+
+        {
+            q: "Ali mempunyai 500 gula-gula. Dia memberikan 125 kepada murid. Kemudian membeli 75 lagi. Berapa gula-gula sekarang?",
+            a: ["400", "425", "450", "475"],
+            correct: 2,
+            hint: "500 − 125 + 75."
+        },
+
+        {
+            q: "Sebuah sekolah membeli 24 kotak buku. Setiap kotak mempunyai 25 buku. Berapa buku?",
+            a: ["500", "600", "700", "800"],
+            correct: 1,
+            hint: "24 × 25."
+        },
+
+        {
+            q: "900 buah epal dibahagikan sama rata kepada 15 bakul. Berapa epal setiap bakul?",
+            a: ["50", "60", "70", "80"],
+            correct: 1,
+            hint: "15 × 60."
+        },
+
+        {
+            q: "Sebuah lori membawa 350 kg barang. 125 kg diturunkan dan kemudian 75 kg dimasukkan. Berapa kg sekarang?",
+            a: ["250", "275", "300", "325"],
+            correct: 2,
+            hint: "350 − 125 + 75."
+        }
+
+    ]
+},
+
+{
+    id: 3,
+    icon: "🍕",
+    name: "Dunia Pecahan",
+
+    easy: [
+
+        {
+            q: "1/2 + 1/4 = ?",
+            a: ["1/4", "2/4", "3/4", "4/4"],
+            correct: 2,
+            hint: "Samakan penyebut."
+        },
+
+        {
+            q: "3/4 − 1/4 = ?",
+            a: ["1/4", "2/4", "3/4", "4/4"],
+            correct: 1,
+            hint: "3 − 1."
+        },
+
+        {
+            q: "Pecahan manakah lebih besar?",
+            a: ["1/4", "1/2", "1/8", "1/10"],
+            correct: 1,
+            hint: "Separuh lebih besar."
+        },
+
+        {
+            q: "2/4 dalam bentuk paling ringkas ialah?",
+            a: ["1/2", "1/3", "2/3", "3/4"],
+            correct: 0,
+            hint: "Bahagi pembilang dan penyebut dengan 2."
+        },
+
+        {
+            q: "1/5 + 1/5 = ?",
+            a: ["1/10", "2/5", "2/10", "5/5"],
+            correct: 1,
+            hint: "Tambah pembilang."
+        }
+
+    ],
+
+    medium: [
+
+        {
+            q: "2/3 + 1/3 = ?",
+            a: ["1/3", "2/3", "1", "4/3"],
+            correct: 2,
+            hint: "2 + 1 = 3."
+        },
+
+        {
+            q: "5/6 − 2/6 = ?",
+            a: ["1/6", "2/6", "3/6", "4/6"],
+            correct: 2,
+            hint: "5 − 2."
+        },
+
+        {
+            q: "1/2 + 1/2 = ?",
+            a: ["1/2", "1", "2", "3/2"],
+            correct: 1,
+            hint: "Separuh + separuh."
+        },
+
+        {
+            q: "3/4 bersamaan berapa peratus?",
+            a: ["25%", "50%", "75%", "80%"],
+            correct: 2,
+            hint: "1/4 = 25%."
+        },
+
+        {
+            q: "2/5 bersamaan?",
+            a: ["20%", "30%", "40%", "50%"],
+            correct: 2,
+            hint: "1/5 = 20%."
+        }
+
+    ],
+
+    boss: [
+
+        {
+            q: "Ali makan 1/4 kek dan adiknya makan 2/4. Berapa bahagian kek telah dimakan?",
+            a: ["1/4", "2/4", "3/4", "4/4"],
+            correct: 2,
+            hint: "1/4 + 2/4."
+        },
+
+        {
+            q: "Siti mempunyai 3/4 L air. Dia minum 1/4 L. Berapa tinggal?",
+            a: ["1/4 L", "2/4 L", "3/4 L", "4/4 L"],
+            correct: 1,
+            hint: "3/4 − 1/4."
+        },
+
+        {
+            q: "Sebuah pizza dipotong kepada 8 bahagian. Ali makan 3 bahagian. Apakah pecahan yang tinggal?",
+            a: ["3/8", "4/8", "5/8", "6/8"],
+            correct: 2,
+            hint: "8 − 3."
+        },
+
+        {
+            q: "1/2 daripada 20 murid ialah berapa murid?",
+            a: ["5", "10", "15", "20"],
+            correct: 1,
+            hint: "Bahagi 20 kepada 2."
+        },
+
+        {
+            q: "3/5 daripada 100 ialah?",
+            a: ["20", "40", "60", "80"],
+            correct: 2,
+            hint: "1/5 = 20."
+        }
+
+    ]
+},
+
+{
+    id: 4,
+    icon: "🔵",
+    name: "Dunia Perpuluhan",
+
+    easy: [
+
+        {
+            q: "0.5 bersamaan dengan?",
+            a: ["1/2", "1/3", "1/4", "2/3"],
+            correct: 0,
+            hint: "0.5 ialah separuh."
+        },
+
+        {
+            q: "0.25 + 0.25 = ?",
+            a: ["0.40", "0.50", "0.60", "0.75"],
+            correct: 1,
+            hint: "Tambah 25 sen + 25 sen."
+        },
+
+        {
+            q: "1.5 + 2.5 = ?",
+            a: ["3", "4", "5", "6"],
+            correct: 1,
+            hint: "1.5 + 2.5."
+        },
+
+        {
+            q: "Manakah lebih besar?",
+            a: ["0.7", "0.5", "0.3", "0.2"],
+            correct: 0,
+            hint: "7 persepuluh."
+        },
+
+        {
+            q: "0.2 + 0.3 = ?",
+            a: ["0.4", "0.5", "0.6", "0.7"],
+            correct: 1,
+            hint: "2 persepuluh + 3 persepuluh."
+        }
+
+    ],
+
+    medium: [
+
+        {
+            q: "2.5 + 1.75 = ?",
+            a: ["3.25", "4.25", "4.50", "5.25"],
+            correct: 1,
+            hint: "Susun titik perpuluhan."
+        },
+
+        {
+            q: "5.5 − 2.25 = ?",
+            a: ["2.25", "3.25", "3.50", "4.25"],
+            correct: 1,
+            hint: "Tolak 2.25 daripada 5.50."
+        },
+
+        {
+            q: "0.75 bersamaan?",
+            a: ["1/4", "1/2", "3/4", "4/5"],
+            correct: 2,
+            hint: "75%."
+        },
+
+        {
+            q: "1.2 × 10 = ?",
+            a: ["1.2", "12", "120", "0.12"],
+            correct: 1,
+            hint: "Gerakkan titik satu tempat."
+        },
+
+        {
+            q: "3.5 + 2.5 = ?",
+            a: ["5", "6", "7", "8"],
+            correct: 1,
+            hint: "0.5 + 0.5 = 1."
+        }
+
+    ],
+
+    boss: [
+
+        {
+            q: "Harga sebatang pen ialah RM2.50. Ali membeli 4 batang. Berapa jumlah?",
+            a: ["RM8", "RM9", "RM10", "RM12"],
+            correct: 2,
+            hint: "2.50 × 4."
+        },
+
+        {
+            q: "Siti mempunyai 5.5 L air. Dia menggunakan 2.75 L. Berapa tinggal?",
+            a: ["2.25 L", "2.50 L", "2.75 L", "3.25 L"],
+            correct: 2,
+            hint: "5.50 − 2.75."
+        },
+
+        {
+            q: "Satu reben panjangnya 2.5 m. Dua reben diperlukan. Berapa jumlah panjang?",
+            a: ["4 m", "5 m", "5.5 m", "6 m"],
+            correct: 1,
+            hint: "2.5 × 2."
+        },
+
+        {
+            q: "RM10.00 − RM3.75 = ?",
+            a: ["RM5.25", "RM6.25", "RM6.75", "RM7.25"],
+            correct: 1,
+            hint: "10.00 − 3.75."
+        },
+
+        {
+            q: "0.25 daripada 80 ialah?",
+            a: ["10", "20", "30", "40"],
+            correct: 1,
+            hint: "0.25 = 1/4."
+        }
+
+    ]
+},
+
+{
+    id: 5,
+    icon: "%",
+    name: "Dunia Peratus",
+
+    easy: [
+
+        {
+            q: "25% daripada 100 ialah?",
+            a: ["10", "20", "25", "50"],
+            correct: 2,
+            hint: "25% = 1/4."
+        },
+
+        {
+            q: "50% bersamaan dengan?",
+            a: ["1/4", "1/2", "3/4", "1/5"],
+            correct: 1,
+            hint: "50% ialah separuh."
+        },
+
+        {
+            q: "10% daripada RM50 ialah?",
+            a: ["RM5", "RM10", "RM15", "RM20"],
+            correct: 0,
+            hint: "Bahagi 50 kepada 10."
+        },
+
+        {
+            q: "20% daripada 200 ialah?",
+            a: ["20", "30", "40", "50"],
+            correct: 2,
+            hint: "10% = 20."
+        },
+
+        {
+            q: "100% daripada 50 ialah?",
+            a: ["25", "50", "75", "100"],
+            correct: 1,
+            hint: "100% = semua."
+        }
+
+    ],
+
+    medium: [
+
+        {
+            q: "25% daripada 80 ialah?",
+            a: ["10", "20", "30", "40"],
+            correct: 1,
+            hint: "25% = 1/4."
+        },
+
+        {
+            q: "50% daripada 60 ialah?",
+            a: ["20", "30", "40", "50"],
+            correct: 1,
+            hint: "Separuh daripada 60."
+        },
+
+        {
+            q: "10% daripada 250 ialah?",
+            a: ["15", "20", "25", "30"],
+            correct: 2,
+            hint: "250 ÷ 10."
+        },
+
+        {
+            q: "75% daripada 100 ialah?",
+            a: ["25", "50", "75", "80"],
+            correct: 2,
+            hint: "3/4 daripada 100."
+        },
+
+        {
+            q: "20% daripada RM150 ialah?",
+            a: ["RM20", "RM30", "RM40", "RM50"],
+            correct: 1,
+            hint: "10% = RM15."
+        }
+
+    ],
+
+    boss: [
+
+        {
+            q: "Sebuah beg berharga RM80. Diskaun 25%. Berapakah harga selepas diskaun?",
+            a: ["RM20", "RM40", "RM60", "RM75"],
+            correct: 2,
+            hint: "Cari 25% daripada RM80 dahulu."
+        },
+
+        {
+            q: "Harga kasut RM120. Diskaun 10%. Berapa harga selepas diskaun?",
+            a: ["RM100", "RM108", "RM110", "RM112"],
+            correct: 1,
+            hint: "10% daripada 120 = 12."
+        },
+
+        {
+            q: "Dalam kelas terdapat 40 murid. 75% hadir. Berapa murid hadir?",
+            a: ["20", "25", "30", "35"],
+            correct: 2,
+            hint: "75% = 3/4."
+        },
+
+        {
+            q: "Sebuah buku RM50 diberi diskaun 20%. Berapa jumlah diskaun?",
+            a: ["RM5", "RM10", "RM15", "RM20"],
+            correct: 1,
+            hint: "10% = RM5."
+        },
+
+        {
+            q: "Harga asal RM200. Diskaun 25%. Harga akhir?",
+            a: ["RM125", "RM150", "RM175", "RM180"],
+            correct: 1,
+            hint: "25% daripada 200 = 50."
+        }
+
+    ]
+},
+
+{
+    id: 6,
+    icon: "💰",
+    name: "Dunia Wang",
+
+    easy: [
+
+        {
+            q: "RM20 + RM15 = ?",
+            a: ["RM25", "RM30", "RM35", "RM40"],
+            correct: 2,
+            hint: "20 + 15."
+        },
+
+        {
+            q: "RM50 − RM18 = ?",
+            a: ["RM22", "RM32", "RM42", "RM38"],
+            correct: 1,
+            hint: "50 − 18."
+        },
+
+        {
+            q: "3 × RM5 = ?",
+            a: ["RM8", "RM10", "RM15", "RM20"],
+            correct: 2,
+            hint: "RM5 + RM5 + RM5."
+        },
+
+        {
+            q: "RM100 − RM25 = ?",
+            a: ["RM65", "RM70", "RM75", "RM80"],
+            correct: 2,
+            hint: "100 − 25."
+        },
+
+        {
+            q: "RM10 + RM7.50 = ?",
+            a: ["RM15.50", "RM16.50", "RM17.50", "RM18.50"],
+            correct: 2,
+            hint: "10 + 7.50."
+        }
+
+    ],
+
+    medium: [
+
+        {
+            q: "RM35.50 + RM24.50 = ?",
+            a: ["RM50", "RM55", "RM60", "RM65"],
+            correct: 2,
+            hint: "50 sen + 50 sen = RM1."
+        },
+
+        {
+            q: "RM100 − RM37.50 = ?",
+            a: ["RM52.50", "RM62.50", "RM72.50", "RM82.50"],
+            correct: 1,
+            hint: "100 − 37.50."
+        },
+
+        {
+            q: "4 × RM12.50 = ?",
+            a: ["RM40", "RM50", "RM60", "RM70"],
+            correct: 1,
+            hint: "12.50 × 4."
+        },
+
+        {
+            q: "RM75 dibahagi sama rata kepada 5 orang. Setiap orang?",
+            a: ["RM10", "RM12", "RM15", "RM20"],
+            correct: 2,
+            hint: "75 ÷ 5."
+        },
+
+        {
+            q: "RM20 + RM15.50 + RM4.50 = ?",
+            a: ["RM30", "RM35", "RM40", "RM45"],
+            correct: 2,
+            hint: "15.50 + 4.50 = 20."
+        }
+
+    ],
+
+    boss: [
+
+        {
+            q: "Ali mempunyai RM100. Dia membeli 2 buku RM18 setiap satu. Berapa baki?",
+            a: ["RM54", "RM64", "RM74", "RM84"],
+            correct: 2,
+            hint: "18 × 2 dahulu."
+        },
+
+        {
+            q: "Siti membeli 3 baju RM25 setiap satu. Dia membayar RM100. Berapa baki?",
+            a: ["RM15", "RM20", "RM25", "RM30"],
+            correct: 2,
+            hint: "3 × 25 = 75."
+        },
+
+        {
+            q: "Ahmad mempunyai RM200. Dia membelanjakan RM65.50 dan RM24.50. Berapa tinggal?",
+            a: ["RM100", "RM110", "RM120", "RM130"],
+            correct: 2,
+            hint: "65.50 + 24.50 = 90."
+        },
+
+        {
+            q: "Sebuah keluarga membelanjakan RM50 setiap minggu. Berapa untuk 4 minggu?",
+            a: ["RM150", "RM200", "RM250", "RM300"],
+            correct: 1,
+            hint: "50 × 4."
+        },
+
+        {
+            q: "Harga 5 buku ialah RM75. Berapakah harga sebuah buku?",
+            a: ["RM10", "RM12", "RM15", "RM20"],
+            correct: 2,
+            hint: "75 ÷ 5."
+        }
+
+    ]
+},
+
+{
+    id: 7,
+    icon: "⏰",
+    name: "Dunia Masa",
+
+    easy: [
+
+        {
+            q: "1 jam = berapa minit?",
+            a: ["30", "45", "60", "100"],
+            correct: 2,
+            hint: "1 jam standard."
+        },
+
+        {
+            q: "2 jam = berapa minit?",
+            a: ["60", "90", "120", "150"],
+            correct: 2,
+            hint: "60 × 2."
+        },
+
+        {
+            q: "90 minit bersamaan?",
+            a: ["1 jam", "1 jam 30 minit", "2 jam", "2 jam 30 minit"],
+            correct: 1,
+            hint: "60 + 30."
+        },
+
+        {
+            q: "1 hari mempunyai berapa jam?",
+            a: ["12", "18", "24", "30"],
+            correct: 2,
+            hint: "Satu hari penuh."
+        },
+
+        {
+            q: "30 minit = ? jam",
+            a: ["1/4", "1/2", "3/4", "1"],
+            correct: 1,
+            hint: "30 daripada 60."
+        }
+
+    ],
+
+    medium: [
+
+        {
+            q: "2 jam 30 minit = berapa minit?",
+            a: ["120", "130", "150", "180"],
+            correct: 2,
+            hint: "2 × 60 + 30."
+        },
+
+        {
+            q: "3 jam 15 minit = berapa minit?",
+            a: ["165", "175", "185", "195"],
+            correct: 0,
+            hint: "180 + 15."
+        },
+
+        {
+            q: "150 minit = ?",
+            a: ["1 jam 30 minit", "2 jam", "2 jam 30 minit", "3 jam"],
+            correct: 2,
+            hint: "120 + 30."
+        },
+
+        {
+            q: "2 hari = berapa jam?",
+            a: ["24", "36", "48", "72"],
+            correct: 2,
+            hint: "24 × 2."
+        },
+
+        {
+            q: "180 minit = ?",
+            a: ["2 jam", "3 jam", "4 jam", "5 jam"],
+            correct: 1,
+            hint: "60 × 3."
+        }
+
+    ],
+
+    boss: [
+
+        {
+            q: "Sebuah kelas bermula 8:00 pagi dan tamat 10:30 pagi. Berapa lama?",
+            a: ["1 jam", "2 jam", "2 jam 30 minit", "3 jam"],
+            correct: 2,
+            hint: "8:00 → 10:00 → 10:30."
+        },
+
+        {
+            q: "Ali belajar 45 minit pada waktu pagi dan 1 jam 15 minit pada petang. Jumlah masa?",
+            a: ["1 jam 30 minit", "2 jam", "2 jam 15 minit", "2 jam 30 minit"],
+            correct: 1,
+            hint: "45 + 75 minit."
+        },
+
+        {
+            q: "Sebuah bas bertolak 9:30 pagi dan perjalanan mengambil 2 jam. Bila tiba?",
+            a: ["10:30 pagi", "11:00 pagi", "11:30 pagi", "12:00 tengah hari"],
+            correct: 2,
+            hint: "Tambah 2 jam."
+        },
+
+        {
+            q: "Siti tidur 9:00 malam dan bangun 6:00 pagi. Berapa jam tidur?",
+            a: ["8 jam", "9 jam", "10 jam", "11 jam"],
+            correct: 1,
+            hint: "9 malam → 12 malam = 3 jam."
+        },
+
+        {
+            q: "Satu filem bermula 2:15 petang dan berlangsung 1 jam 45 minit. Bila tamat?",
+            a: ["3:30 petang", "4:00 petang", "4:15 petang", "4:30 petang"],
+            correct: 1,
+            hint: "2:15 + 1:45."
+        }
+
+    ]
+},
+
+{
+    id: 8,
+    icon: "📏",
+    name: "Dunia Ukuran",
+
+    easy: [
+
+        {
+            q: "1 kg = berapa gram?",
+            a: ["10", "100", "1,000", "10,000"],
+            correct: 2,
+            hint: "1 kilogram."
+        },
+
+        {
+            q: "2 kg = ? g",
+            a: ["200", "2,000", "20,000", "20"],
+            correct: 1,
+            hint: "2 × 1,000."
+        },
+
+        {
+            q: "1 L = berapa mL?",
+            a: ["100", "500", "1,000", "10,000"],
+            correct: 2,
+            hint: "1 liter."
+        },
+
+        {
+            q: "3 m = berapa cm?",
+            a: ["30", "300", "3,000", "3"],
+            correct: 1,
+            hint: "1 m = 100 cm."
+        },
+
+        {
+            q: "5 cm = berapa mm?",
+            a: ["5", "10", "50", "500"],
+            correct: 2,
+            hint: "1 cm = 10 mm."
+        }
+
+    ],
+
+    medium: [
+
+        {
+            q: "2.5 kg = ? g",
+            a: ["250", "2,500", "25,000", "250,000"],
+            correct: 1,
+            hint: "2.5 × 1,000."
+        },
+
+        {
+            q: "3.5 L = ? mL",
+            a: ["350", "3,500", "35,000", "350,000"],
+            correct: 1,
+            hint: "3.5 × 1,000."
+        },
+
+        {
+            q: "250 cm = ? m",
+            a: ["2.5 m", "25 m", "0.25 m", "250 m"],
+            correct: 0,
+            hint: "Bahagi 100."
+        },
+
+        {
+            q: "4,000 g = ? kg",
+            a: ["0.4", "4", "40", "400"],
+            correct: 1,
+            hint: "Bahagi 1,000."
+        },
+
+        {
+            q: "2 m 50 cm = ? cm",
+            a: ["150", "200", "250", "300"],
+            correct: 2,
+            hint: "200 + 50."
+        }
+
+    ],
+
+    boss: [
+
+        {
+            q: "Sebuah beg mempunyai 2 kg 500 g gula. Digunakan 750 g. Berapa tinggal?",
+            a: ["1 kg 250 g", "1 kg 500 g", "1 kg 750 g", "2 kg"],
+            correct: 2,
+            hint: "2,500 − 750."
+        },
+
+        {
+            q: "Sebuah tangki mengandungi 5 L air. 1.5 L digunakan. Berapa tinggal?",
+            a: ["2.5 L", "3 L", "3.5 L", "4 L"],
+            correct: 2,
+            hint: "5 − 1.5."
+        },
+
+        {
+            q: "Sebatang kayu panjangnya 3 m. Dipotong 75 cm. Berapa panjang tinggal?",
+            a: ["2 m 15 cm", "2 m 25 cm", "2 m 35 cm", "2 m 75 cm"],
+            correct: 1,
+            hint: "300 − 75."
+        },
+
+        {
+            q: "4 botol masing-masing mengandungi 750 mL air. Berapa jumlah?",
+            a: ["2 L", "2.5 L", "3 L", "3.5 L"],
+            correct: 2,
+            hint: "750 × 4."
+        },
+
+        {
+            q: "Sebuah kotak mempunyai berat 5 kg. 2 kotak mempunyai berat?",
+            a: ["7 kg", "8 kg", "10 kg", "12 kg"],
+            correct: 2,
+            hint: "5 × 2."
+        }
+
+    ]
+},
+
+{
+    id: 9,
+    icon: "📐",
+    name: "Dunia Ruang",
+
+    easy: [
+
+        {
+            q: "Bentuk yang mempunyai 3 sisi ialah?",
+            a: ["Segi empat", "Segi tiga", "Bulatan", "Pentagon"],
+            correct: 1,
+            hint: "Tri bermaksud tiga."
+        },
+
+        {
+            q: "Berapakah sudut tepat?",
+            a: ["45°", "60°", "90°", "180°"],
+            correct: 2,
+            hint: "Sudut seperti bucu buku."
+        },
+
+        {
+            q: "Berapakah sisi sebuah segi empat sama?",
+            a: ["2", "3", "4", "5"],
+            correct: 2,
+            hint: "Empat sisi."
+        },
+
+        {
+            q: "Berapakah perimeter segi empat sama sisi 5 cm?",
+            a: ["10 cm", "15 cm", "20 cm", "25 cm"],
+            correct: 2,
+            hint: "5 × 4."
+        },
+
+        {
+            q: "Luas segi empat tepat 8 cm × 4 cm?",
+            a: ["12 cm²", "24 cm²", "32 cm²", "40 cm²"],
+            correct: 2,
+            hint: "Panjang × lebar."
+        }
+
+    ],
+
+    medium: [
+
+        {
+            q: "Perimeter segi empat tepat panjang 8 cm dan lebar 4 cm?",
+            a: ["12 cm", "20 cm", "24 cm", "32 cm"],
+            correct: 2,
+            hint: "2 × (8 + 4)."
+        },
+
+        {
+            q: "Luas segi empat tepat 12 cm × 5 cm?",
+            a: ["50", "60", "70", "80"],
+            correct: 1,
+            hint: "12 × 5."
+        },
+
+        {
+            q: "Sebuah segi empat sama mempunyai sisi 7 cm. Perimeter?",
+            a: ["14", "21", "28", "35"],
+            correct: 2,
+            hint: "7 × 4."
+        },
+
+        {
+            q: "Berapakah sudut lurus?",
+            a: ["45°", "90°", "180°", "360°"],
+            correct: 2,
+            hint: "Separuh bulatan."
+        },
+
+        {
+            q: "Luas segi empat sama sisi 6 cm?",
+            a: ["12 cm²", "24 cm²", "36 cm²", "42 cm²"],
+            correct: 2,
+            hint: "6 × 6."
+        }
+
+    ],
+
+    boss: [
+
+        {
+            q: "Sebuah taman panjang 20 m dan lebar 10 m. Berapakah luas?",
+            a: ["100 m²", "200 m²", "300 m²", "400 m²"],
+            correct: 1,
+            hint: "20 × 10."
+        },
+
+        {
+            q: "Sebuah kawasan berbentuk segi empat tepat mempunyai perimeter 60 m. Jika panjang 20 m, berapa lebar?",
+            a: ["5 m", "10 m", "15 m", "20 m"],
+            correct: 1,
+            hint: "2 × (20 + lebar) = 60."
+        },
+
+        {
+            q: "Sebuah segi empat sama mempunyai luas 49 cm². Berapakah panjang sisi?",
+            a: ["5 cm", "6 cm", "7 cm", "8 cm"],
+            correct: 2,
+            hint: "7 × 7 = 49."
+        },
+
+        {
+            q: "Sebuah bilik 8 m × 5 m. Berapakah luas lantai?",
+            a: ["13 m²", "26 m²", "40 m²", "80 m²"],
+            correct: 2,
+            hint: "8 × 5."
+        },
+
+        {
+            q: "Perimeter sebuah segi empat sama ialah 36 cm. Berapa panjang setiap sisi?",
+            a: ["6 cm", "8 cm", "9 cm", "12 cm"],
+            correct: 2,
+            hint: "36 ÷ 4."
+        }
+
+    ]
+},
+
+{
+    id: 10,
+    icon: "📊",
+    name: "Dunia Data",
+
+    easy: [
+
+        {
+            q: "Data: 5, 7, 7, 8, 10. Apakah mod?",
+            a: ["5", "7", "8", "10"],
+            correct: 1,
+            hint: "Nombor yang paling kerap."
+        },
+
+        {
+            q: "Data: 2, 4, 6. Berapakah jumlah?",
+            a: ["10", "12", "14", "16"],
+            correct: 1,
+            hint: "2 + 4 + 6."
+        },
+
+        {
+            q: "Data: 3, 5, 7. Apakah median?",
+            a: ["3", "5", "7", "15"],
+            correct: 1,
+            hint: "Nombor tengah."
+        },
+
+        {
+            q: "Data: 2, 4, 6. Apakah purata?",
+            a: ["3", "4", "5", "6"],
+            correct: 1,
+            hint: "Jumlah ÷ bilangan data."
+        },
+
+        {
+            q: "15 murid suka Matematik dan 10 suka Sains. Berapa beza?",
+            a: ["3", "5", "10", "25"],
+            correct: 1,
+            hint: "15 − 10."
+        }
+
+    ],
+
+    medium: [
+
+        {
+            q: "Data: 4, 6, 8, 10. Jumlah?",
+            a: ["24", "26", "28", "30"],
+            correct: 2,
+            hint: "Tambah semua."
+        },
+
+        {
+            q: "Data: 2, 4, 6, 8. Purata?",
+            a: ["4", "5", "6", "7"],
+            correct: 1,
+            hint: "20 ÷ 4."
+        },
+
+        {
+            q: "Data: 3, 3, 4, 5, 5, 5. Mod?",
+            a: ["3", "4", "5", "6"],
+            correct: 2,
+            hint: "5 muncul paling banyak."
+        },
+
+        {
+            q: "Data: 2, 5, 7, 9, 10. Median?",
+            a: ["5", "7", "9", "10"],
+            correct: 1,
+            hint: "Nombor tengah."
+        },
+
+        {
+            q: "Jika 20 murid memilih bola sepak dan 15 memilih badminton, berapa jumlah?",
+            a: ["25", "30", "35", "40"],
+            correct: 2,
+            hint: "20 + 15."
+        }
+
+    ],
+
+    boss: [
+
+        {
+            q: "Markah Ali ialah 60, 70, 80 dan 90. Berapakah purata?",
+            a: ["70", "75", "80", "85"],
+            correct: 1,
+            hint: "Jumlah markah ÷ 4."
+        },
+
+        {
+            q: "Sebuah kelas mempunyai 30 murid. 18 memilih Matematik. Berapa murid tidak memilih Matematik?",
+            a: ["10", "12", "15", "18"],
+            correct: 1,
+            hint: "30 − 18."
+        },
+
+        {
+            q: "Data: 10, 20, 20, 30, 40. Apakah mod?",
+            a: ["10", "20", "30", "40"],
+            correct: 1,
+            hint: "20 muncul dua kali."
+        },
+
+        {
+            q: "Purata 4 nombor ialah 20. Apakah jumlah semua nombor?",
+            a: ["40", "60", "80", "100"],
+            correct: 2,
+            hint: "Purata × bilangan."
+        },
+
+        {
+            q: "Jumlah murid dalam empat kelas ialah 120. Purata murid setiap kelas?",
+            a: ["20", "25", "30", "40"],
+            correct: 2,
+            hint: "120 ÷ 4."
+        }
+
+    ]
+},
+
+{
+    id: 11,
+    icon: "🧠",
+    name: "Penyelesaian Masalah",
+
+    easy: [
+
+        {
+            q: "Ali ada 24 gula-gula. Dia memberikan 8. Berapa tinggal?",
+            a: ["14", "16", "18", "20"],
+            correct: 1,
+            hint: "24 − 8."
+        },
+
+        {
+            q: "6 baris. Setiap baris ada 5 bola. Jumlah?",
+            a: ["11", "20", "30", "35"],
+            correct: 2,
+            hint: "6 × 5."
+        },
+
+        {
+            q: "RM100 − RM35 − RM25 = ?",
+            a: ["RM30", "RM35", "RM40", "RM45"],
+            correct: 2,
+            hint: "35 + 25 = 60."
+        },
+
+        {
+            q: "30 murid. 1/3 lelaki. Berapa lelaki?",
+            a: ["5", "10", "15", "20"],
+            correct: 1,
+            hint: "30 ÷ 3."
+        },
+
+        {
+            q: "5 kotak dengan 10 pensel setiap satu. Jumlah?",
+            a: ["15", "30", "50", "100"],
+            correct: 2,
+            hint: "5 × 10."
+        }
+
+    ],
+
+    medium: [
+
+        {
+            q: "Sebuah kedai mempunyai 80 epal. Terjual 35. Berapa tinggal?",
+            a: ["35", "40", "45", "50"],
+            correct: 2,
+            hint: "80 − 35."
+        },
+
+        {
+            q: "4 kotak mempunyai 25 buku setiap satu. Jumlah?",
+            a: ["50", "75", "100", "125"],
+            correct: 2,
+            hint: "4 × 25."
+        },
+
+        {
+            q: "RM200. Beli barang RM75 dan RM50. Baki?",
+            a: ["RM50", "RM75", "RM100", "RM125"],
+            correct: 1,
+            hint: "75 + 50 = 125."
+        },
+
+        {
+            q: "60 murid. 25% tidak hadir. Berapa hadir?",
+            a: ["15", "30", "45", "50"],
+            correct: 2,
+            hint: "25% tidak hadir = 15."
+        },
+
+        {
+            q: "3 jam sehari selama 5 hari. Jumlah masa?",
+            a: ["10 jam", "12 jam", "15 jam", "18 jam"],
+            correct: 2,
+            hint: "3 × 5."
+        }
+
+    ],
+
+    boss: [
+
+        {
+            q: "Ali mempunyai RM150. Dia membeli 3 buku RM25 setiap satu. Baki?",
+            a: ["RM50", "RM65", "RM75", "RM85"],
+            correct: 2,
+            hint: "3 × 25 = 75."
+        },
+
+        {
+            q: "Sebuah kelas mempunyai 40 murid. 3/4 hadir. Berapa hadir?",
+            a: ["20", "25", "30", "35"],
+            correct: 2,
+            hint: "40 ÷ 4 × 3."
+        },
+
+        {
+            q: "Sebuah lori membawa 500 kg. 175 kg diturunkan. Kemudian 50 kg dimasukkan. Berapa sekarang?",
+            a: ["325", "350", "375", "400"],
+            correct: 2,
+            hint: "500 − 175 + 50."
+        },
+
+        {
+            q: "Sebuah kedai mempunyai 120 baju. 25% dijual pada hari pertama. Berapa baju tinggal?",
+            a: ["30", "60", "90", "100"],
+            correct: 2,
+            hint: "25% daripada 120 = 30."
+        },
+
+        {
+            q: "Sebuah bas membawa 48 murid. 1/4 turun. Berapa murid masih dalam bas?",
+            a: ["12", "24", "36", "40"],
+            correct: 2,
+            hint: "1/4 daripada 48 = 12."
+        }
+
+    ]
+},
+
+{
+    id: 12,
+    icon: "👑",
+    name: "FINAL BOSS",
+
+    easy: [
+
+        {
+            q: "20 + 30 = ?",
+            a: ["40", "50", "60", "70"],
+            correct: 1,
+            hint: "Tambah 20 dan 30."
+        },
+
+        {
+            q: "50 − 20 = ?",
+            a: ["20", "30", "40", "50"],
+            correct: 1,
+            hint: "50 tolak 20."
+        },
+
+        {
+            q: "5 × 6 = ?",
+            a: ["20", "25", "30", "35"],
+            correct: 2,
+            hint: "5 kumpulan 6."
+        },
+
+        {
+            q: "100 ÷ 10 = ?",
+            a: ["5", "10", "15", "20"],
+            correct: 1,
+            hint: "10 × 10 = 100."
+        },
+
+        {
+            q: "50% daripada 20 ialah?",
+            a: ["5", "10", "15", "20"],
+            correct: 1,
+            hint: "Separuh daripada 20."
+        }
+
+    ],
+
+    medium: [
+
+        {
+            q: "RM100 − RM25 = ?",
+            a: ["RM50", "RM65", "RM75", "RM85"],
+            correct: 2,
+            hint: "100 − 25."
+        },
+
+        {
+            q: "2 kg = ? g",
+            a: ["200", "1,000", "2,000", "20,000"],
+            correct: 2,
+            hint: "1 kg = 1,000 g."
+        },
+
+        {
+            q: "2 jam 30 minit = ? minit",
+            a: ["120", "130", "150", "180"],
+            correct: 2,
+            hint: "2 × 60 + 30."
+        },
+
+        {
+            q: "Luas 10 cm × 5 cm?",
+            a: ["15", "30", "50", "100"],
+            correct: 2,
+            hint: "Panjang × lebar."
+        },
+
+        {
+            q: "25% daripada 80?",
+            a: ["10", "20", "30", "40"],
+            correct: 1,
+            hint: "25% = 1/4."
+        }
+
+    ],
+
+    boss: [
+
+        {
+            q: "Sarah mempunyai RM100. Dia membeli 2 buku RM18 setiap satu. Berapa baki?",
+            a: ["RM54", "RM64", "RM74", "RM84"],
+            correct: 2,
+            hint: "18 × 2 kemudian tolak daripada 100."
+        },
+
+        {
+            q: "Sebuah beg RM80 diberi diskaun 25%. Harga selepas diskaun?",
+            a: ["RM20", "RM40", "RM60", "RM75"],
+            correct: 2,
+            hint: "25% daripada RM80 = RM20."
+        },
+
+        {
+            q: "Ali mempunyai 2 kg gula. Dia menggunakan 750 g. Berapa tinggal?",
+            a: ["1,000 g", "1,250 g", "1,500 g", "1,750 g"],
+            correct: 1,
+            hint: "2,000 − 750."
+        },
+
+        {
+            q: "Sebuah taman 10 m × 5 m. Berapakah luas?",
+            a: ["15 m²", "30 m²", "50 m²", "100 m²"],
+            correct: 2,
+            hint: "10 × 5."
+        },
+
+        {
+            q: "Sebuah kelas mempunyai 40 murid. 75% hadir. Berapa murid hadir?",
+            a: ["20", "25", "30", "35"],
+            correct: 2,
+            hint: "75% = 3/4."
+        }
+
+    ]
+}
+
+];
+
+
+/* =========================================================
+GAME STATE
+========================================================= */
+
+let xp = Number(localStorage.getItem("mathXP")) || 0;
+let score = Number(localStorage.getItem("mathScore")) || 0;
+let level = Number(localStorage.getItem("mathLevel")) || 1;
+
+let lives = 3;
+
+let playerName =
+    localStorage.getItem("mathPlayerName") || "";
+
+let currentWorld = 0;
+let currentStage = "";
+let currentQuestion = 0;
+
+let stageScore = 0;
+let hintUsed = false;
+
+let completedStages =
+    JSON.parse(
+        localStorage.getItem("completedStages") || "{}"
+    );
+
+
+/* =========================================================
+ELEMENTS
+========================================================= */
+
+const map =
+    document.getElementById("map");
+
+const stageMenu =
+    document.getElementById("stageMenu");
+
+const game =
+    document.getElementById("game");
+
+const result =
+    document.getElementById("result");
+
+
+/* =========================================================
+PLAYER
+========================================================= */
+
+document.getElementById("playerName").value =
+    playerName;
+
+
+function savePlayer() {
+
+    const name =
+        document.getElementById("playerName").value.trim();
+
+    if (!name) {
+
+        alert("Sila masukkan nama murid.");
+
+        return;
+    }
+
+    playerName = name;
+
+    localStorage.setItem(
+        "mathPlayerName",
+        playerName
+    );
+
+    document.getElementById(
+        "playerMessage"
+    ).textContent =
+        " ✅ Nama disimpan!";
+
+}
+
+
+/* =========================================================
+RENDER WORLD
+========================================================= */
+
+function renderWorlds() {
+
+    const grid =
+        document.getElementById("worldGrid");
+
+    grid.innerHTML = "";
+
+    worlds.forEach((world, index) => {
+
+        const div =
+            document.createElement("div");
+
+        const unlocked =
+            index === 0 ||
+            isWorldCompleted(index - 1);
+
+        const completed =
+            isWorldCompleted(index);
+
+        div.className = "world";
+
+        if (!unlocked) {
+
+            div.classList.add("locked");
+
+        }
+
+        if (completed) {
+
+            div.classList.add("completed");
+
+        }
+
+        div.innerHTML = `
+
+            <div class="world-icon">
+                ${world.icon}
+            </div>
+
+            <div class="world-name">
+                ${world.name}
+            </div>
+
+            <div class="world-status">
+
+                ${
+                    completed
+                    ? "🏆 Dunia Selesai"
+
+                    : unlocked
+                    ? "▶ Boleh Dimainkan"
+
+                    : "🔒 Terkunci"
+                }
+
+            </div>
+
+        `;
+
+        if (unlocked) {
+
+            div.onclick =
+                () => openStageMenu(index);
+
+        }
+
+        grid.appendChild(div);
+
+    });
+
+    updateStats();
+
+}
+
+
+/* =========================================================
+OPEN STAGE MENU
+========================================================= */
+
+function openStageMenu(index) {
+
+    currentWorld = index;
+
+    map.style.display = "none";
+
+    stageMenu.classList.add("active");
+
+    game.classList.remove("active");
+
+    result.classList.remove("active");
+
+    document.getElementById(
+        "stageTitle"
+    ).textContent =
+        `${worlds[index].icon} ${worlds[index].name}`;
+
+    renderStages();
+
+}
+
+
+/* =========================================================
+RENDER STAGES
+========================================================= */
+
+function renderStages() {
+
+    const grid =
+        document.getElementById("stageGrid");
+
+    grid.innerHTML = "";
+
+    const stages = [
+
+        {
+            id: "easy",
+            icon: "🟢",
+            name: "Mudah",
+            class: "easy",
+            xp: 20
+        },
+
+        {
+            id: "medium",
+            icon: "🟡",
+            name: "Sederhana",
+            class: "medium",
+            xp: 40
+        },
+
+        {
+            id: "boss",
+            icon: "🔴",
+            name: "BOSS",
+            class: "boss",
+            xp: 75
+        }
+
+    ];
+
+    stages.forEach((stage, index) => {
+
+        const completed =
+            isStageCompleted(
+                currentWorld,
+                stage.id
+            );
+
+        let unlocked = false;
+
+        if (index === 0) {
+
+            unlocked = true;
+
+        } else {
+
+            const previous =
+                stages[index - 1].id;
+
+            unlocked =
+                isStageCompleted(
+                    currentWorld,
+                    previous
+                );
+
+        }
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            `stage ${stage.class}`;
+
+        if (!unlocked) {
+
+            div.classList.add("locked");
+
+        }
+
+        if (completed) {
+
+            div.classList.add("completed");
+
+        }
+
+        div.innerHTML = `
+
+            <div class="stage-icon">
+                ${stage.icon}
+            </div>
+
+            <div class="stage-name">
+                ${stage.name}
+            </div>
+
+            <div class="stage-info">
+
+                ${completed
+                    ? "✅ SELESAI"
+                    : unlocked
+                    ? `▶ Main • +${stage.xp} XP`
+                    : "🔒 Terkunci"
+                }
+
+            </div>
+
+        `;
+
+        if (unlocked && !completed) {
+
+            div.onclick =
+                () => startStage(stage.id);
+
+        }
+
+        grid.appendChild(div);
+
+    });
+
+}
+
+
+/* =========================================================
+START STAGE
+========================================================= */
+
+function startStage(stage) {
+
+    currentStage = stage;
+
+    currentQuestion = 0;
+
+    stageScore = 0;
+
+    hintUsed = false;
+
+    lives = 3;
+
+    stageMenu.classList.remove("active");
+
+    game.classList.add("active");
+
+    result.classList.remove("active");
+
+    loadQuestion();
+
+}
+
+
+/* =========================================================
+LOAD QUESTION
+========================================================= */
+
+function loadQuestion() {
+
+    const questions =
+        worlds[currentWorld][currentStage];
+
+    const q =
+        questions[currentQuestion];
+
+    const difficultyNames = {
+
+        easy: "🟢 MUDAH",
+
+        medium: "🟡 SEDERHANA",
+
+        boss: "🔴 BOSS"
+
+    };
+
+    document.getElementById(
+        "gameWorldTitle"
+    ).textContent =
+        `${worlds[currentWorld].icon} ${worlds[currentWorld].name}`;
+
+    document.getElementById(
+        "questionNumber"
+    ).textContent =
+        `Soalan ${currentQuestion + 1} / ${questions.length}`;
+
+    const difficulty =
+        document.getElementById("difficulty");
+
+    difficulty.textContent =
+        difficultyNames[currentStage];
+
+    difficulty.className =
+        `difficulty ${currentStage}`;
+
+    document.getElementById(
+        "question"
+    ).textContent =
+        q.q;
+
+    const answers =
+        document.getElementById("answers");
+
+    answers.innerHTML = "";
+
+    q.a.forEach((answer, index) => {
+
+        const button =
+            document.createElement("button");
+
+        button.className =
+            "answer";
+
+        button.textContent =
+            answer;
+
+        button.onclick =
+            () => checkAnswer(index, button);
+
+        answers.appendChild(button);
+
+    });
+
+    document.getElementById(
+        "feedback"
+    ).textContent = "";
+
+    document.getElementById(
+        "nextBtn"
+    ).style.display = "none";
+
+    document.getElementById(
+        "hintBox"
+    ).classList.remove("show");
+
+    updateStats();
+
+}
+
+
+/* =========================================================
+CHECK ANSWER
+========================================================= */
+
+function checkAnswer(selected, button) {
+
+    const questions =
+        worlds[currentWorld][currentStage];
+
+    const q =
+        questions[currentQuestion];
+
+    const buttons =
+        document.querySelectorAll(".answer");
+
+    buttons.forEach(btn => {
+
+        btn.disabled = true;
+
+    });
+
+
+    if (selected === q.correct) {
+
+        button.classList.add("correct");
+
+        stageScore++;
+
+        let earnedXP = 5;
+
+        if (currentStage === "easy") {
+
+            earnedXP = 5;
+
+        }
+
+        if (currentStage === "medium") {
+
+            earnedXP = 10;
+
+        }
+
+        if (currentStage === "boss") {
+
+            earnedXP = 15;
+
+        }
+
+        xp += earnedXP;
+
+        score += earnedXP;
+
+        document.getElementById(
+            "feedback"
+        ).textContent =
+            `🎉 BETUL! +${earnedXP} XP`;
+
+        saveProgress();
+
+        updateStats();
+
+        document.getElementById(
+            "nextBtn"
+        ).style.display =
+            "inline-block";
+
+    } else {
+
+        button.classList.add("wrong");
+
+        buttons[q.correct]
+            .classList.add("correct");
+
+        lives--;
+
+        document.getElementById(
+            "feedback"
+        ).textContent =
+            "❌ Belum betul. Cuba lagi!";
+
+        if (lives <= 0) {
+
+            lives = 3;
+
+            document.getElementById(
+                "feedback"
+            ).textContent =
+                "❤️ Nyawa habis. Cuba semula!";
+
+        }
+
+        updateStats();
+
+        /*
+        PENTING:
+
+        Bila salah, kita BENARKAN
+        murid cuba soalan tersebut lagi.
+        */
+
+        setTimeout(() => {
+
+            buttons.forEach(btn => {
+
+                btn.disabled = false;
+
+                btn.classList.remove(
+                    "wrong",
+                    "correct"
+                );
+
+            });
+
+            document.getElementById(
+                "feedback"
+            ).textContent =
+                "💪 Cuba sekali lagi!";
+
+        }, 1000);
+
+    }
+
+}
+
+
+/* =========================================================
+NEXT QUESTION
+========================================================= */
+
+function nextQuestion() {
+
+    const questions =
+        worlds[currentWorld][currentStage];
+
+    currentQuestion++;
+
+    if (
+        currentQuestion >=
+        questions.length
+    ) {
+
+        completeStage();
+
+        return;
+
+    }
+
+    loadQuestion();
+
+}
+
+
+/* =========================================================
+COMPLETE STAGE
+========================================================= */
+
+function completeStage() {
+
+    markStageCompleted(
+        currentWorld,
+        currentStage
+    );
+
+    let bonusXP = 0;
+
+    if (currentStage === "easy") {
+
+        bonusXP = 20;
+
+    } else if (currentStage === "medium") {
+
+        bonusXP = 40;
+
+    } else {
+
+        bonusXP = 75;
+
+    }
+
+    xp += bonusXP;
+
+    score += bonusXP;
+
+    saveProgress();
+
+    game.classList.remove("active");
+
+    result.classList.add("active");
+
+    const percentage =
+        Math.round(
+            (stageScore /
+            worlds[currentWorld][currentStage].length)
+            * 100
+        );
+
+
+    if (currentStage === "easy") {
+
+        document.getElementById(
+            "resultIcon"
+        ).textContent = "🟢";
+
+        document.getElementById(
+            "resultTitle"
+        ).textContent =
+            "Stage Mudah Selesai!";
+
+        document.getElementById(
+            "resultMessage"
+        ).innerHTML =
+            `
+            Hebat ${playerName || "Murid"}! 🎉
+            <br><br>
+            Anda telah menguasai asas dunia ini.
+            <br>
+            <strong>Stage Sederhana telah dibuka! 🔓</strong>
+            `;
+
+        document.getElementById(
+            "continueBtn"
+        ).textContent =
+            "🟡 Ke Stage Sederhana";
+
+    }
+
+
+    else if (currentStage === "medium") {
+
+        document.getElementById(
+            "resultIcon"
+        ).textContent = "🟡";
+
+        document.getElementById(
+            "resultTitle"
+        ).textContent =
+            "Stage Sederhana Selesai!";
+
+        document.getElementById(
+            "resultMessage"
+        ).innerHTML =
+            `
+            Hebat! 🔥
+            <br><br>
+            Anda semakin dekat dengan Boss!
+            <br>
+            <strong>Stage BOSS telah dibuka! 🔓</strong>
+            `;
+
+        document.getElementById(
+            "continueBtn"
+        ).textContent =
+            "🔴 Lawan BOSS";
+
+    }
+
+
+    else {
+
+        document.getElementById(
+            "resultIcon"
+        ).textContent = "👑";
+
+        document.getElementById(
+            "resultTitle"
+        ).textContent =
+            "BOSS DIKALAHKAN!";
+
+        document.getElementById(
+            "resultMessage"
+        ).innerHTML =
+            `
+            🎉 TAHNIAH!
+            <br><br>
+            Anda berjaya menguasai:
+            <br>
+            <strong>
+            ${worlds[currentWorld].name}
+            </strong>
+            <br><br>
+            Dunia seterusnya telah dibuka! 🔓
+            `;
+
+        document.getElementById(
+            "continueBtn"
+        ).textContent =
+            "➡️ Dunia Seterusnya";
+
+    }
+
+
+    document.getElementById(
+        "finalScore"
+    ).textContent =
+        stageScore * 10;
+
+    document.getElementById(
+        "finalXP"
+    ).textContent =
+        bonusXP;
+
+    document.getElementById(
+        "badge"
+    ).textContent =
+        `🏅 ${getBadge(percentage)}`;
+
+    updateStats();
+
+}
+
+
+/* =========================================================
+CONTINUE
+========================================================= */
+
+function continueAdventure() {
+
+    result.classList.remove("active");
+
+    if (currentStage === "easy") {
+
+        startStage("medium");
+
+        return;
+
+    }
+
+    if (currentStage === "medium") {
+
+        startStage("boss");
+
+        return;
+
+    }
+
+    if (currentStage === "boss") {
+
+        if (
+            currentWorld <
+            worlds.length - 1
+        ) {
+
+            currentWorld++;
+
+            openStageMenu(currentWorld);
+
+        } else {
+
+            showFinalChampion();
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+FINAL CHAMPION
+========================================================= */
+
+function showFinalChampion() {
+
+    map.style.display = "none";
+
+    stageMenu.classList.remove("active");
+
+    game.classList.remove("active");
+
+    result.classList.add("active");
+
+    document.getElementById(
+        "resultIcon"
+    ).textContent =
+        "👑";
+
+    document.getElementById(
+        "resultTitle"
+    ).textContent =
+        "MATH LEGEND!";
+
+    document.getElementById(
+        "resultMessage"
+    ).innerHTML =
+        `
+        <strong>
+        TAHNIAH ${playerName || "MURID"}!
+        </strong>
+        <br><br>
+
+        Anda telah berjaya menamatkan
+        <strong>SEMUA DUNIA MATEMATIK TAHUN 6!</strong>
+
+        <br><br>
+
+        🔢 Nombor<br>
+        ➕ Operasi<br>
+        🍕 Pecahan<br>
+        🔵 Perpuluhan<br>
+        % Peratus<br>
+        💰 Wang<br>
+        ⏰ Masa<br>
+        📏 Ukuran<br>
+        📐 Ruang<br>
+        📊 Data<br>
+        🧠 Penyelesaian Masalah<br>
+        👑 Final Boss
+
+        <br><br>
+
+        <strong>
+        ANDA ADALAH MATH LEGEND! 🏆
+        </strong>
+        `;
+
+    document.getElementById(
+        "finalScore"
+    ).textContent =
+        score;
+
+    document.getElementById(
+        "finalXP"
+    ).textContent =
+        xp;
+
+    document.getElementById(
+        "badge"
+    ).textContent =
+        "👑 MATH LEGEND";
+
+    document.getElementById(
+        "continueBtn"
+    ).textContent =
+        "🗺️ Lihat Peta";
+
+    document.getElementById(
+        "continueBtn"
+    ).onclick =
+        backToMap;
+
+}
+
+
+/* =========================================================
+HINT
+========================================================= */
+
+function showHint() {
+
+    const questions =
+        worlds[currentWorld][currentStage];
+
+    const q =
+        questions[currentQuestion];
+
+    const box =
+        document.getElementById("hintBox");
+
+    box.textContent =
+        `💡 Hint: ${q.hint}`;
+
+    box.classList.add("show");
+
+}
+
+
+/* =========================================================
+BADGE
+========================================================= */
+
+function getBadge(percentage) {
+
+    if (percentage === 100) {
+
+        return "PERFECT MASTER 🌟";
+
+    }
+
+    if (percentage >= 80) {
+
+        return "MATH HERO 🦸";
+
+    }
+
+    if (percentage >= 60) {
+
+        return "MATH EXPLORER 🧭";
+
+    }
+
+    return "BRAVE LEARNER 💪";
+
+}
+
+
+/* =========================================================
+COMPLETION
+========================================================= */
+
+function markStageCompleted(world, stage) {
+
+    if (!completedStages[world]) {
+
+        completedStages[world] = {};
+
+    }
+
+    completedStages[world][stage] = true;
+
+}
+
+
+function isStageCompleted(world, stage) {
+
+    return (
+        completedStages[world] &&
+        completedStages[world][stage]
+    );
+
+}
+
+
+function isWorldCompleted(world) {
+
+    return (
+        isStageCompleted(world, "easy") &&
+        isStageCompleted(world, "medium") &&
+        isStageCompleted(world, "boss")
+    );
+
+}
+
+
+/* =========================================================
+SAVE
+========================================================= */
+
+function saveProgress() {
+
+    localStorage.setItem(
+        "mathXP",
+        xp
+    );
+
+    localStorage.setItem(
+        "mathScore",
+        score
+    );
+
+    localStorage.setItem(
+        "mathLevel",
+        level
+    );
+
+    localStorage.setItem(
+        "completedStages",
+        JSON.stringify(completedStages)
+    );
+
+}
+
+
+/* =========================================================
+LEVEL
+========================================================= */
+
+function calculateLevel() {
+
+    if (xp >= 1000) {
+
+        level = 10;
+
+    } else if (xp >= 800) {
+
+        level = 9;
+
+    } else if (xp >= 650) {
+
+        level = 8;
+
+    } else if (xp >= 500) {
+
+        level = 7;
+
+    } else if (xp >= 350) {
+
+        level = 6;
+
+    } else if (xp >= 250) {
+
+        level = 5;
+
+    } else if (xp >= 150) {
+
+        level = 4;
+
+    } else if (xp >= 100) {
+
+        level = 3;
+
+    } else if (xp >= 50) {
+
+        level = 2;
+
+    } else {
+
+        level = 1;
+
+    }
+
+}
+
+
+/* =========================================================
+UPDATE STATS
+========================================================= */
+
+function updateStats() {
+
+    calculateLevel();
+
+    document.getElementById(
+        "xp"
+    ).textContent =
+        xp;
+
+    document.getElementById(
+        "score"
+    ).textContent =
+        score;
+
+    document.getElementById(
+        "lives"
+    ).textContent =
+        lives;
+
+    document.getElementById(
+        "level"
+    ).textContent =
+        level;
+
+    let completedWorldCount = 0;
+
+    worlds.forEach((world, index) => {
+
+        if (isWorldCompleted(index)) {
+
+            completedWorldCount++;
+
+        }
+
+    });
+
+    const progress =
+        (completedWorldCount /
+        worlds.length) * 100;
+
+    document.getElementById(
+        "progressBar"
+    ).style.width =
+        progress + "%";
+
+}
+
+
+/* =========================================================
+BACK TO MAP
+========================================================= */
+
+function backToMap() {
+
+    game.classList.remove("active");
+
+    result.classList.remove("active");
+
+    stageMenu.classList.remove("active");
+
+    map.style.display = "block";
+
+    renderWorlds();
+
+}
+
+
+/* =========================================================
+RESET GAME
+========================================================= */
+
+function resetGame() {
+
+    const confirmReset =
+        confirm(
+            "Adakah anda pasti mahu reset semua progress?"
+        );
+
+    if (!confirmReset) return;
+
+    localStorage.removeItem("mathXP");
+
+    localStorage.removeItem("mathScore");
+
+    localStorage.removeItem("mathLevel");
+
+    localStorage.removeItem("completedStages");
+
+    xp = 0;
+
+    score = 0;
+
+    level = 1;
+
+    lives = 3;
+
+    completedStages = {};
+
+    backToMap();
+
+}
+
+
+/* =========================================================
+START
+========================================================= */
+
+renderWorlds();
+
+updateStats();
+
+</script>
+
+</body>
+</html>
