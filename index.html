@@ -1741,13 +1741,15 @@ function savePlayer() {
 
 function syncFirebaseData() {
     if (!playerName) return;
-    db.collection("students").doc(playerName).set({
+    
+    // Simpan data di simpulan 'students/NAMA_MURID'
+    db.ref("students/" + playerName).set({
         name: playerName,
         score: score,
         xp: xp,
         level: level,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
+        updatedAt: firebase.database.ServerValue.TIMESTAMP
+    });
 }
 
 function toggleLeaderboard() {
@@ -1759,29 +1761,40 @@ function toggleLeaderboard() {
 }
 
 function fetchLeaderboard() {
-    // Menggunakan onSnapshot untuk mendengar perubahan data secara live
-    db.collection("students")
-      .orderBy("score", "desc")
-      .limit(20)
-      .onSnapshot((querySnapshot) => {
+    // Ambil 20 murid dengan markah tertinggi secara real-time
+    db.ref("students")
+      .orderByChild("score")
+      .limitToLast(20)
+      .on("value", (snapshot) => {
         let html = "";
-        let rank = 1;
-        
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            html += `<tr>
-                <td><strong>#${rank++}</strong></td>
-                <td>${data.name || 'Murid'}</td>
-                <td>${data.score || 0}</td>
-                <td>${data.xp || 0}</td>
-                <td>Lvl ${data.level || 1}</td>
-            </tr>`;
-        });
-        
+        let players = [];
+
+        if (snapshot.exists()) {
+            // Kumpul semua data murid
+            snapshot.forEach((childSnapshot) => {
+                players.push(childSnapshot.val());
+            });
+
+            // Firebase limitToLast menyusun dari rendah ke tinggi, 
+            // jadi kita terbalikkan (reverse) supaya markah tertinggi di atas.
+            players.reverse();
+
+            let rank = 1;
+            players.forEach((player) => {
+                html += `<tr>
+                    <td><strong>#${rank++}</strong></td>
+                    <td>${player.name || 'Murid'}</td>
+                    <td>${player.score || 0}</td>
+                    <td>${player.xp || 0}</td>
+                    <td>Lvl ${player.level || 1}</td>
+                </tr>`;
+            });
+        }
+
         document.getElementById("leaderboardData").innerHTML = 
             html || "<tr><td colspan='5'>Tiada data lagi.</td></tr>";
     }, (error) => {
-        console.error("Ralat Firestore Leaderboard:", error);
+        console.error("Ralat Realtime Database:", error);
     });
 }
 function toggleQR() {
