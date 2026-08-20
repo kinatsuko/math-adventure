@@ -124,6 +124,10 @@ body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #dbea
 <!-- PANEL LEADERBOARD (UNTUK GURU) -->
 <div class="leaderboard-box" id="leaderboardBox">
     <h2>🏆 Papan Markah Murid (Leaderboard)</h2>
+    <!-- Butang Padam Semua Data -->
+<button onclick="clearLeaderboard()" style="background-color: #ff4d4d; color: white; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer;">
+  🗑️ Padam Semua Leaderboard
+</button>
     <table class="leaderboard-table">
         <thead>
             <tr>
@@ -2011,6 +2015,67 @@ function updateStats() {
     }).catch((error) => {
         console.error("Gagal muat data murid:", error);
     });
+}
+    function clearLeaderboard() {
+    // Pengesahan keselamatan supaya tidak terpadam secara tidak sengaja
+    const sahkan = confirm("Adakah anda pasti ingin memadam SEMUA data leaderboard?");
+    
+    if (sahkan) {
+        db.ref("students").remove()
+        .then(() => {
+            alert("Semua data leaderboard berjaya dipadam!");
+            // Kemaskini paparan jadual
+            document.getElementById("leaderboardData").innerHTML = "<tr><td colspan='5'>Tiada data lagi.</td></tr>";
+        })
+        .catch((error) => {
+            console.error("Gagal memadam data:", error);
+            alert("Gagal memadam data: " + error.message);
+        });
+    }
+}
+
+    function fetchLeaderboard() {
+    const leaderboardTable = document.getElementById("leaderboardData");
+
+    db.ref("students").orderByChild("score").limitToLast(20).on("value", (snapshot) => {
+        let html = "";
+        let players = [];
+
+        if (snapshot.exists()) {
+            snapshot.forEach((childSnapshot) => {
+                // Simpan kunci (ID/Nama) bersama data
+                players.push({
+                    key: childSnapshot.key,
+                    ...childSnapshot.val()
+                });
+            });
+
+            players.reverse();
+
+            let rank = 1;
+            players.forEach((player) => {
+                html += `<tr>
+                    <td><strong>#${rank++}</strong></td>
+                    <td>${player.name || 'Murid'}</td>
+                    <td>${player.score || 0}</td>
+                    <td>${player.xp || 0}</td>
+                    <td><button onclick="deleteSinglePlayer('${player.key}')" style="background:none; border:none; cursor:pointer;">❌</button></td>
+                </tr>`;
+            });
+            leaderboardTable.innerHTML = html;
+        } else {
+            leaderboardTable.innerHTML = "<tr><td colspan='5'>Tiada data rekod lagi.</td></tr>";
+        }
+    });
+}
+
+// Fungsi padam individu
+function deleteSinglePlayer(playerKey) {
+    if (confirm(`Padam rekod untuk ${playerKey}?`)) {
+        db.ref("students/" + playerKey).remove()
+        .then(() => alert("Rekod berjaya dipadam!"))
+        .catch((err) => alert("Ralat: " + err.message));
+    }
 }
 renderWorlds();
 </script>
