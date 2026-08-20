@@ -1763,11 +1763,25 @@ function syncFirebaseData() {
     });
 }
 
+// Tetapkan katalaluan khas untuk guru di sini
+const TEACHER_PASSWORD = "2411"; // Tukar kepada katalaluan pilihan anda
+
 function toggleLeaderboard() {
     const lb = document.getElementById("leaderboardBox");
-    lb.classList.toggle("active");
-    if (lb.classList.contains("active")) {
-        fetchLeaderboard();
+    
+    // Jika leaderboard belum terbuka, minta katalaluan dahulu
+    if (!lb.classList.contains("active")) {
+        const inputPassword = prompt("🔒 Akses Guru sahaja.\nSila masukkan katalaluan:");
+        
+        if (inputPassword === TEACHER_PASSWORD) {
+            lb.classList.add("active");
+            fetchLeaderboard(); // Muat data leaderboard jika katalaluan betul
+        } else if (inputPassword !== null) {
+            alert("❌ Katalaluan salah! Akses ditolak.");
+        }
+    } else {
+        // Tutup semula jika tetingkap sudah sedia terbuka
+        lb.classList.remove("active");
     }
 }
 
