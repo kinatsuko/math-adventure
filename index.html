@@ -3,817 +3,229 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Math Adventure Tahun 6</title>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<!-- QR Code Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 <style>
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #dbeafe, #fef3c7);
-    min-height: 100vh;
-    color: #1f2937;
-}
-
-.container {
-    max-width: 1150px;
-    margin: auto;
-    padding: 20px;
-}
-
-/* =========================
-HEADER
-========================= */
-
-.header {
-    background: white;
-    border-radius: 22px;
-    padding: 22px;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 30px rgba(0,0,0,.08);
-}
-
-.header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.title {
-    font-size: 30px;
-    font-weight: 800;
-}
-
-.subtitle {
-    color: #6b7280;
-    margin-top: 5px;
-}
-
-.stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.stat {
-    background: #f3f4f6;
-    padding: 14px;
-    border-radius: 14px;
-    text-align: center;
-    font-weight: bold;
-}
-
-.stat span {
-    color: #2563eb;
-    font-size: 20px;
-}
-
-/* =========================
-PLAYER
-========================= */
-
-.player-box {
-    background: white;
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 25px rgba(0,0,0,.07);
-}
-
-.player-box input {
-    width: 100%;
-    padding: 14px;
-    border: 2px solid #d1d5db;
-    border-radius: 12px;
-    font-size: 16px;
-    margin-top: 8px;
-}
-
-.player-box button {
-    margin-top: 10px;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 10px;
-    background: #2563eb;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-/* =========================
-MAP
-========================= */
-
-.map {
-    background: white;
-    border-radius: 22px;
-    padding: 25px;
-    box-shadow: 0 8px 30px rgba(0,0,0,.08);
-}
-
-.map h2 {
-    margin-bottom: 20px;
-}
-
-.world-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-}
-
-.world {
-    background: #f9fafb;
-    border: 3px solid #e5e7eb;
-    border-radius: 18px;
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: .2s;
-}
-
-.world:hover {
-    transform: translateY(-5px);
-}
-
-.world.locked {
-    opacity: .45;
-    cursor: not-allowed;
-}
-
-.world.completed {
-    background: #f0fdf4;
-    border-color: #22c55e;
-}
-
-.world-icon {
-    font-size: 45px;
-}
-
-.world-name {
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 8px;
-}
-
-.world-status {
-    margin-top: 8px;
-    color: #6b7280;
-    font-size: 13px;
-}
-
-/* =========================
-STAGE MENU
-========================= */
-
-.stage-menu {
-    display: none;
-    background: white;
-    border-radius: 22px;
-    padding: 30px;
-    box-shadow: 0 8px 30px rgba(0,0,0,.08);
-}
-
-.stage-menu.active {
-    display: block;
-}
-
-.stage-title {
-    text-align: center;
-    font-size: 28px;
-    margin-bottom: 25px;
-}
-
-.stage-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-.stage {
-    border-radius: 20px;
-    padding: 25px;
-    text-align: center;
-    cursor: pointer;
-    border: 3px solid #e5e7eb;
-    transition: .2s;
-}
-
-.stage:hover {
-    transform: translateY(-5px);
-}
-
-.easy {
-    background: #f0fdf4;
-    border-color: #22c55e;
-}
-
-.medium {
-    background: #fffbeb;
-    border-color: #f59e0b;
-}
-
-.boss {
-    background: #fef2f2;
-    border-color: #ef4444;
-}
-
-.stage.locked {
-    opacity: .45;
-    cursor: not-allowed;
-}
-
-.stage.completed {
-    box-shadow: 0 0 0 4px #22c55e;
-}
-
-.stage-icon {
-    font-size: 50px;
-}
-
-.stage-name {
-    font-size: 22px;
-    font-weight: bold;
-    margin: 10px 0;
-}
-
-.stage-info {
-    color: #6b7280;
-}
-
-/* =========================
-GAME
-========================= */
-
-.game {
-    display: none;
-    background: white;
-    border-radius: 22px;
-    padding: 30px;
-    box-shadow: 0 8px 30px rgba(0,0,0,.08);
-}
-
-.game.active {
-    display: block;
-}
-
-.game-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-}
-
-.question-number {
-    color: #6b7280;
-    margin-top: 5px;
-}
-
-.difficulty {
-    padding: 8px 14px;
-    border-radius: 20px;
-    font-weight: bold;
-}
-
-.difficulty.easy {
-    color: #166534;
-}
-
-.difficulty.medium {
-    color: #92400e;
-}
-
-.difficulty.boss {
-    color: #991b1b;
-}
-
-.question {
-    font-size: 28px;
-    font-weight: bold;
-    text-align: center;
-    margin: 40px 0;
-    line-height: 1.5;
-}
-
-.answers {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-}
-
-.answer {
-    padding: 18px;
-    border: 2px solid #d1d5db;
-    background: white;
-    border-radius: 15px;
-    font-size: 20px;
-    cursor: pointer;
-    transition: .2s;
-}
-
-.answer:hover {
-    background: #eff6ff;
-    border-color: #2563eb;
-}
-
-.answer.correct {
-    background: #dcfce7;
-    border-color: #22c55e;
-}
-
-.answer.wrong {
-    background: #fee2e2;
-    border-color: #ef4444;
-}
-
-.answer:disabled {
-    cursor: not-allowed;
-}
-
-.feedback {
-    min-height: 35px;
-    text-align: center;
-    margin: 20px 0;
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.game-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.btn {
-    border: none;
-    padding: 13px 22px;
-    border-radius: 12px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.btn-next {
-    background: #2563eb;
-    color: white;
-}
-
-.btn-hint {
-    background: #facc15;
-    color: #713f12;
-}
-
-.btn-map {
-    background: #e5e7eb;
-}
-
-/* =========================
-HINT
-========================= */
-
-.hint-box {
-    display: none;
-    background: #fffbeb;
-    border: 2px solid #facc15;
-    padding: 15px;
-    border-radius: 12px;
-    margin: 15px 0;
-    text-align: center;
-}
-
-.hint-box.show {
-    display: block;
-}
-
-/* =========================
-RESULT
-========================= */
-
-.result {
-    display: none;
-    background: white;
-    border-radius: 22px;
-    padding: 40px;
-    text-align: center;
-    box-shadow: 0 8px 30px rgba(0,0,0,.08);
-}
-
-.result.active {
-    display: block;
-}
-
-.result-icon {
-    font-size: 80px;
-}
-
-.result h2 {
-    font-size: 32px;
-    margin: 15px 0;
-}
-
-.result-score {
-    font-size: 24px;
-    margin: 15px;
-}
-
-.result-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 25px;
-}
-
-/* =========================
-PROGRESS
-========================= */
-
-.progress-container {
-    margin-top: 15px;
-}
-
-.progress {
-    height: 12px;
-    background: #e5e7eb;
-    border-radius: 20px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%;
-    width: 0%;
-    background: #2563eb;
-    transition: .4s;
-}
-
-/* =========================
-BADGE
-========================= */
-
-.badge {
-    display: inline-block;
-    background: #fef3c7;
-    border: 2px solid #f59e0b;
-    padding: 10px 15px;
-    border-radius: 20px;
-    margin-top: 15px;
-    font-weight: bold;
-}
-
-/* =========================
-RESPONSIVE
-========================= */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #dbeafe, #fef3c7); min-height: 100vh; color: #1f2937; }
+.container { max-width: 1150px; margin: auto; padding: 20px; }
+
+/* HEADER */
+.header { background: white; border-radius: 22px; padding: 22px; margin-bottom: 20px; box-shadow: 0 8px 30px rgba(0,0,0,.08); }
+.header-top { display: flex; justify-content: space-between; align-items: center; }
+.title { font-size: 30px; font-weight: 800; }
+.subtitle { color: #6b7280; margin-top: 5px; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
+.stat { background: #f3f4f6; padding: 14px; border-radius: 14px; text-align: center; font-weight: bold; }
+.stat span { color: #2563eb; font-size: 20px; }
+
+/* NAV & LEADERBOARD BUTTONS */
+.teacher-tools { margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-tool { background: #4f46e5; color: white; border: none; padding: 10px 18px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+.btn-qr { background: #059669; }
+
+/* PLAYER & PANELS */
+.player-box, .leaderboard-box, .qr-box { background: white; border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(0,0,0,.07); }
+.player-box input { width: 100%; padding: 14px; border: 2px solid #d1d5db; border-radius: 12px; font-size: 16px; margin-top: 8px; }
+.player-box button { margin-top: 10px; padding: 12px 20px; border: none; border-radius: 10px; background: #2563eb; color: white; font-weight: bold; cursor: pointer; }
+
+/* LEADERBOARD TABLE */
+.leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+.leaderboard-table th, .leaderboard-table td { padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+.leaderboard-table th { background: #f3f4f6; border-radius: 6px; }
+
+/* MAP & STAGES */
+.map, .stage-menu, .game, .result { background: white; border-radius: 22px; padding: 25px; box-shadow: 0 8px 30px rgba(0,0,0,.08); }
+.world-grid, .stage-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px; }
+.world, .stage { background: #f9fafb; border: 3px solid #e5e7eb; border-radius: 18px; padding: 20px; text-align: center; cursor: pointer; transition: .2s; }
+.world:hover, .stage:hover { transform: translateY(-5px); }
+.world.locked, .stage.locked { opacity: .45; cursor: not-allowed; }
+.world.completed, .stage.completed { background: #f0fdf4; border-color: #22c55e; }
+.world-icon, .stage-icon { font-size: 45px; }
+.world-name, .stage-name { font-size: 18px; font-weight: bold; margin-top: 8px; }
+
+/* GAMEPLAY */
+.stage-menu, .game, .result, .leaderboard-box, .qr-box { display: none; }
+.active { display: block !important; }
+.game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+.question { font-size: 28px; font-weight: bold; text-align: center; margin: 40px 0; }
+.answers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+.answer { padding: 18px; border: 2px solid #d1d5db; background: white; border-radius: 15px; font-size: 20px; cursor: pointer; }
+.answer.correct { background: #dcfce7; border-color: #22c55e; }
+.answer.wrong { background: #fee2e2; border-color: #ef4444; }
+.feedback { min-height: 35px; text-align: center; margin: 20px 0; font-size: 20px; font-weight: bold; }
+.game-buttons { display: flex; justify-content: center; gap: 10px; }
+.btn { border: none; padding: 13px 22px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+.btn-next { background: #2563eb; color: white; }
+.btn-hint { background: #facc15; color: #713f12; }
+.btn-map { background: #e5e7eb; }
+.hint-box { display: none; background: #fffbeb; border: 2px solid #facc15; padding: 15px; border-radius: 12px; margin: 15px 0; text-align: center; }
+.hint-box.show { display: block; }
+
+/* PROGRESS & BADGE */
+.progress-container { margin-top: 15px; }
+.progress { height: 12px; background: #e5e7eb; border-radius: 20px; overflow: hidden; }
+.progress-bar { height: 100%; width: 0%; background: #2563eb; transition: .4s; }
+.badge { display: inline-block; background: #fef3c7; border: 2px solid #f59e0b; padding: 10px 15px; border-radius: 20px; margin-top: 15px; font-weight: bold; }
+
+#qrcode { display: flex; justify-content: center; margin: 20px 0; }
 
 @media(max-width: 800px) {
-
-    .world-grid,
-    .stage-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .stats {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    .world-grid, .stage-grid, .stats { grid-template-columns: repeat(2, 1fr); }
 }
-
 @media(max-width: 550px) {
-
-    .world-grid,
-    .stage-grid,
-    .answers {
-        grid-template-columns: 1fr;
-    }
-
-    .title {
-        font-size: 23px;
-    }
-
-    .question {
-        font-size: 22px;
-    }
-
-    .stats {
-        grid-template-columns: 1fr 1fr;
-    }
+    .world-grid, .stage-grid, .answers { grid-template-columns: 1fr; }
 }
-
 </style>
 </head>
-
 <body>
 
 <div class="container">
 
-<!-- =========================
-HEADER
-========================= -->
-
+<!-- HEADER -->
 <div class="header">
-
     <div class="header-top">
-
         <div>
-            <div class="title">
-                🧮 Math Adventure Tahun 6
-            </div>
-
-            <div class="subtitle">
-                Belajar • Bermain • Naik Level • Jadi Math Champion
-            </div>
+            <div class="title">🧮 Math Adventure Tahun 6</div>
+            <div class="subtitle">Belajar • Bermain • Naik Level • Jadi Math Champion</div>
         </div>
+    </div>
 
+    <div class="teacher-tools">
+        <button class="btn-tool" onclick="toggleLeaderboard()">🏆 Cikgu: Leaderboard Murid</button>
+        <button class="btn-tool btn-qr" onclick="toggleQR()">📱 Imbas QR Code</button>
     </div>
 
     <div class="stats">
-
-        <div class="stat">
-            ⭐ XP
-            <br>
-            <span id="xp">0</span>
-        </div>
-
-        <div class="stat">
-            🏆 Skor
-            <br>
-            <span id="score">0</span>
-        </div>
-
-        <div class="stat">
-            ❤️ Nyawa
-            <br>
-            <span id="lives">3</span>
-        </div>
-
-        <div class="stat">
-            🆙 Level
-            <br>
-            <span id="level">1</span>
-        </div>
-
+        <div class="stat">⭐ XP<br><span id="xp">0</span></div>
+        <div class="stat">🏆 Skor<br><span id="score">0</span></div>
+        <div class="stat">❤️ Nyawa<br><span id="lives">3</span></div>
+        <div class="stat">🆙 Level<br><span id="level">1</span></div>
     </div>
 
     <div class="progress-container">
-
         <strong>Progress Dunia</strong>
-
-        <div class="progress">
-            <div
-                class="progress-bar"
-                id="progressBar">
-            </div>
-        </div>
-
+        <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
     </div>
-
 </div>
 
-
-<!-- =========================
-PLAYER
-========================= -->
-
-<div class="player-box">
-
-    <strong>👨‍🎓 Nama Murid</strong>
-
-    <input
-        type="text"
-        id="playerName"
-        placeholder="Masukkan nama murid"
-    >
-
-    <button onclick="savePlayer()">
-        💾 Simpan Nama
-    </button>
-
-    <span id="playerMessage"></span>
-
-</div>
-
-
-<!-- =========================
-WORLD MAP
-========================= -->
-
-<div class="map" id="map">
-
-    <h2>🗺️ Peta Math Adventure</h2>
-
-    <div
-        class="world-grid"
-        id="worldGrid">
-    </div>
-
-</div>
-
-
-<!-- =========================
-STAGE MENU
-========================= -->
-
-<div
-    class="stage-menu"
-    id="stageMenu">
-
-    <h2
-        class="stage-title"
-        id="stageTitle">
-    </h2>
-
-    <div
-        class="stage-grid"
-        id="stageGrid">
-    </div>
-
+<!-- PANEL LEADERBOARD (UNTUK GURU) -->
+<div class="leaderboard-box" id="leaderboardBox">
+    <h2>🏆 Papan Markah Murid (Leaderboard)</h2>
+    <table class="leaderboard-table">
+        <thead>
+            <tr>
+                <th>Kedudukan</th>
+                <th>Nama Murid</th>
+                <th>Skor</th>
+                <th>XP</th>
+                <th>Level</th>
+            </tr>
+        </thead>
+        <tbody id="leaderboardData">
+            <tr><td colspan="5">Memuatkan data murid...</td></tr>
+        </tbody>
+    </table>
     <br>
+    <button class="btn btn-map" onclick="toggleLeaderboard()">Tutup Leaderboard</button>
+</div>
 
+<!-- PANEL QR CODE (UNTUK MURID JOIN) -->
+<div class="qr-box" id="qrBox">
+    <h2>📱 Imbas Kod QR Untuk Mula Bermain</h2>
+    <p style="margin-top: 8px; color: #6b7280;">Minta murid imbas menggunakan telefon/tablet:</p>
+    <div id="qrcode"></div>
+    <div style="text-align: center;">
+        <button class="btn btn-map" onclick="toggleQR()">Tutup QR Code</button>
+    </div>
+</div>
+
+<!-- PLAYER NAME -->
+<div class="player-box">
+    <strong>👨‍🎓 Nama Murid</strong>
+    <input type="text" id="playerName" placeholder="Masukkan nama penuh murid">
+    <button onclick="savePlayer()">💾 Simpan Nama</button>
+    <span id="playerMessage"></span>
+</div>
+
+<!-- WORLD MAP -->
+<div class="map" id="map">
+    <h2>🗺️ Peta Math Adventure</h2>
+    <div class="world-grid" id="worldGrid"></div>
+</div>
+
+<!-- STAGE MENU -->
+<div class="stage-menu" id="stageMenu">
+    <h2 class="stage-title" id="stageTitle"></h2>
+    <div class="stage-grid" id="stageGrid"></div>
+    <br>
     <div style="text-align:center">
-
-        <button
-            class="btn btn-map"
-            onclick="backToMap()">
-
-            ← Kembali ke Peta
-
-        </button>
-
+        <button class="btn btn-map" onclick="backToMap()">← Kembali ke Peta</button>
     </div>
-
 </div>
 
-
-<!-- =========================
-GAME
-========================= -->
-
-<div
-    class="game"
-    id="game">
-
+<!-- GAME PANEL -->
+<div class="game" id="game">
     <div class="game-header">
-
         <div>
-
-            <h2 id="gameWorldTitle">
-            </h2>
-
-            <div
-                class="question-number"
-                id="questionNumber">
-            </div>
-
+            <h2 id="gameWorldTitle"></h2>
+            <div class="question-number" id="questionNumber"></div>
         </div>
-
-        <div
-            class="difficulty"
-            id="difficulty">
-        </div>
-
+        <div class="difficulty" id="difficulty"></div>
     </div>
-
-
-    <div
-        class="question"
-        id="question">
-    </div>
-
-
-    <div
-        class="answers"
-        id="answers">
-    </div>
-
-
-    <div
-        class="feedback"
-        id="feedback">
-    </div>
-
-
-    <div
-        class="hint-box"
-        id="hintBox">
-    </div>
-
-
+    <div class="question" id="question"></div>
+    <div class="answers" id="answers"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="hint-box" id="hintBox"></div>
     <div class="game-buttons">
-
-        <button
-            class="btn btn-hint"
-            onclick="showHint()">
-
-            💡 Hint
-
-        </button>
-
-        <button
-            class="btn btn-next"
-            id="nextBtn"
-            onclick="nextQuestion()"
-            style="display:none">
-
-            Seterusnya →
-
-        </button>
-
-        <button
-            class="btn btn-map"
-            onclick="backToMap()">
-
-            🗺️ Peta
-
-        </button>
-
+        <button class="btn btn-hint" onclick="showHint()">💡 Hint</button>
+        <button class="btn btn-next" id="nextBtn" onclick="nextQuestion()" style="display:none">Seterusnya →</button>
+        <button class="btn btn-map" onclick="backToMap()">🗺️ Peta</button>
     </div>
-
 </div>
 
-
-<!-- =========================
-RESULT
-========================= -->
-
-<div
-    class="result"
-    id="result">
-
-    <div
-        class="result-icon"
-        id="resultIcon">
-        🏆
+<!-- RESULT PANEL -->
+<div class="result" id="result">
+    <div class="result-icon" id="resultIcon">🏆</div>
+    <h2 id="resultTitle">Tahniah!</h2>
+    <div class="result-score">Skor: <strong id="finalScore">0</strong></div>
+    <div>⭐ XP: <strong id="finalXP">0</strong></div>
+    <div id="resultMessage" style="margin-top:15px"></div>
+    <div class="badge" id="badge"></div>
+    <div class="result-buttons" style="margin-top:25px;">
+        <button class="btn btn-next" id="continueBtn" onclick="continueAdventure()">➡️ Teruskan</button>
+        <button class="btn btn-map" onclick="backToMap()">🗺️ Peta</button>
     </div>
-
-    <h2 id="resultTitle">
-        Tahniah!
-    </h2>
-
-    <div class="result-score">
-
-        Skor:
-        <strong id="finalScore">
-            0
-        </strong>
-
-    </div>
-
-    <div>
-
-        ⭐ XP:
-        <strong id="finalXP">
-            0
-        </strong>
-
-    </div>
-
-    <div
-        id="resultMessage"
-        style="margin-top:15px">
-    </div>
-
-    <div
-        class="badge"
-        id="badge">
-    </div>
-
-    <div class="result-buttons">
-
-        <button
-            class="btn btn-next"
-            id="continueBtn"
-            onclick="continueAdventure()">
-
-            ➡️ Teruskan
-
-        </button>
-
-        <button
-            class="btn btn-map"
-            onclick="backToMap()">
-
-            🗺️ Peta
-
-        </button>
-
-    </div>
-
 </div>
 
-
 </div>
-
 
 <script>
+/* =========================================================
+KONFIGURASI FIREBASE (GANTIKAN DENGAN MAKLUMAT ANDA)
+========================================================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyCLBWO6ayOHQkgjbSCh0ecg85GQXuX-WzA",
+  authDomain: "math-adventure-29936.firebaseapp.com",
+  projectId: "math-adventure-29936",
+  storageBucket: "math-adventure-29936.firebasestorage.app",
+  messagingSenderId: "380441014969",
+  appId: "1:380441014969:web:8166fb50357713df9a6168"
+};
+
+// Inisialisasi Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 /* =========================================================
-DATA WORLD
+DATA DUNIA (ISIKAN ATAU KEKALKAN DATA SOALAN LENGKAP)
 ========================================================= */
-
 const worlds = [
 
 {
@@ -2294,1153 +1706,256 @@ const worlds = [
 
 ];
 
-
 /* =========================================================
-GAME STATE
+STATE & LOGIK PERMAINAN
 ========================================================= */
-
 let xp = Number(localStorage.getItem("mathXP")) || 0;
 let score = Number(localStorage.getItem("mathScore")) || 0;
 let level = Number(localStorage.getItem("mathLevel")) || 1;
-
 let lives = 3;
-
-let playerName =
-    localStorage.getItem("mathPlayerName") || "";
-
+let playerName = localStorage.getItem("mathPlayerName") || "";
 let currentWorld = 0;
 let currentStage = "";
 let currentQuestion = 0;
-
 let stageScore = 0;
-let hintUsed = false;
+let completedStages = JSON.parse(localStorage.getItem("completedStages") || "{}");
 
-let completedStages =
-    JSON.parse(
-        localStorage.getItem("completedStages") || "{}"
-    );
-
-
-/* =========================================================
-ELEMENTS
-========================================================= */
-
-const map =
-    document.getElementById("map");
-
-const stageMenu =
-    document.getElementById("stageMenu");
-
-const game =
-    document.getElementById("game");
-
-const result =
-    document.getElementById("result");
-
-
-/* =========================================================
-PLAYER
-========================================================= */
-
-document.getElementById("playerName").value =
-    playerName;
-
+document.getElementById("playerName").value = playerName;
 
 function savePlayer() {
-
-    const name =
-        document.getElementById("playerName").value.trim();
-
-    if (!name) {
-
-        alert("Sila masukkan nama murid.");
-
-        return;
-    }
-
+    const name = document.getElementById("playerName").value.trim();
+    if (!name) { alert("Sila masukkan nama murid."); return; }
     playerName = name;
-
-    localStorage.setItem(
-        "mathPlayerName",
-        playerName
-    );
-
-    document.getElementById(
-        "playerMessage"
-    ).textContent =
-        " ✅ Nama disimpan!";
-
+    localStorage.setItem("mathPlayerName", playerName);
+    document.getElementById("playerMessage").textContent = " ✅ Nama disimpan!";
+    syncFirebaseData();
 }
 
+function syncFirebaseData() {
+    if (!playerName) return;
+    db.collection("students").doc(playerName).set({
+        name: playerName,
+        score: score,
+        xp: xp,
+        level: level,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+}
 
-/* =========================================================
-RENDER WORLD
-========================================================= */
+function toggleLeaderboard() {
+    const lb = document.getElementById("leaderboardBox");
+    lb.classList.toggle("active");
+    if (lb.classList.contains("active")) {
+        fetchLeaderboard();
+    }
+}
+
+function fetchLeaderboard() {
+    db.collection("students").orderBy("score", "desc").limit(20).get().then((querySnapshot) => {
+        let html = "";
+        let rank = 1;
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            html += `<tr>
+                <td><strong>#${rank++}</strong></td>
+                <td>${data.name}</td>
+                <td>${data.score}</td>
+                <td>${data.xp}</td>
+                <td>Lvl ${data.level}</td>
+            </tr>`;
+        });
+        document.getElementById("leaderboardData").innerHTML = html || "<tr><td colspan='5'>Tiada data lagi.</td></tr>";
+    });
+}
+
+function toggleQR() {
+    const qrBox = document.getElementById("qrBox");
+    qrBox.classList.toggle("active");
+    if (qrBox.classList.contains("active") && document.getElementById("qrcode").innerHTML === "") {
+        new QRCode(document.getElementById("qrcode"), {
+            text: window.location.href,
+            width: 180,
+            height: 180
+        });
+    }
+}
 
 function renderWorlds() {
-
-    const grid =
-        document.getElementById("worldGrid");
-
+    const grid = document.getElementById("worldGrid");
     grid.innerHTML = "";
-
     worlds.forEach((world, index) => {
-
-        const div =
-            document.createElement("div");
-
-        const unlocked =
-            index === 0 ||
-            isWorldCompleted(index - 1);
-
-        const completed =
-            isWorldCompleted(index);
-
+        const div = document.createElement("div");
+        const unlocked = index === 0 || isWorldCompleted(index - 1);
+        const completed = isWorldCompleted(index);
         div.className = "world";
-
-        if (!unlocked) {
-
-            div.classList.add("locked");
-
-        }
-
-        if (completed) {
-
-            div.classList.add("completed");
-
-        }
-
+        if (!unlocked) div.classList.add("locked");
+        if (completed) div.classList.add("completed");
         div.innerHTML = `
-
-            <div class="world-icon">
-                ${world.icon}
-            </div>
-
-            <div class="world-name">
-                ${world.name}
-            </div>
-
-            <div class="world-status">
-
-                ${
-                    completed
-                    ? "🏆 Dunia Selesai"
-
-                    : unlocked
-                    ? "▶ Boleh Dimainkan"
-
-                    : "🔒 Terkunci"
-                }
-
-            </div>
-
+            <div class="world-icon">${world.icon}</div>
+            <div class="world-name">${world.name}</div>
+            <div class="world-status">${completed ? "🏆 Dunia Selesai" : unlocked ? "▶ Boleh Dimainkan" : "🔒 Terkunci"}</div>
         `;
-
-        if (unlocked) {
-
-            div.onclick =
-                () => openStageMenu(index);
-
-        }
-
+        if (unlocked) div.onclick = () => openStageMenu(index);
         grid.appendChild(div);
-
     });
-
     updateStats();
-
 }
-
-
-/* =========================================================
-OPEN STAGE MENU
-========================================================= */
 
 function openStageMenu(index) {
-
     currentWorld = index;
-
-    map.style.display = "none";
-
-    stageMenu.classList.add("active");
-
-    game.classList.remove("active");
-
-    result.classList.remove("active");
-
-    document.getElementById(
-        "stageTitle"
-    ).textContent =
-        `${worlds[index].icon} ${worlds[index].name}`;
-
+    document.getElementById("map").style.display = "none";
+    document.getElementById("stageMenu").classList.add("active");
+    document.getElementById("stageTitle").textContent = `${worlds[index].icon} ${worlds[index].name}`;
     renderStages();
-
 }
-
-
-/* =========================================================
-RENDER STAGES
-========================================================= */
 
 function renderStages() {
-
-    const grid =
-        document.getElementById("stageGrid");
-
+    const grid = document.getElementById("stageGrid");
     grid.innerHTML = "";
-
     const stages = [
-
-        {
-            id: "easy",
-            icon: "🟢",
-            name: "Mudah",
-            class: "easy",
-            xp: 20
-        },
-
-        {
-            id: "medium",
-            icon: "🟡",
-            name: "Sederhana",
-            class: "medium",
-            xp: 40
-        },
-
-        {
-            id: "boss",
-            icon: "🔴",
-            name: "BOSS",
-            class: "boss",
-            xp: 75
-        }
-
+        { id: "easy", icon: "🟢", name: "Mudah", class: "easy", xp: 20 },
+        { id: "medium", icon: "🟡", name: "Sederhana", class: "medium", xp: 40 },
+        { id: "boss", icon: "🔴", name: "BOSS", class: "boss", xp: 75 }
     ];
-
     stages.forEach((stage, index) => {
-
-        const completed =
-            isStageCompleted(
-                currentWorld,
-                stage.id
-            );
-
-        let unlocked = false;
-
-        if (index === 0) {
-
-            unlocked = true;
-
-        } else {
-
-            const previous =
-                stages[index - 1].id;
-
-            unlocked =
-                isStageCompleted(
-                    currentWorld,
-                    previous
-                );
-
-        }
-
-        const div =
-            document.createElement("div");
-
-        div.className =
-            `stage ${stage.class}`;
-
-        if (!unlocked) {
-
-            div.classList.add("locked");
-
-        }
-
-        if (completed) {
-
-            div.classList.add("completed");
-
-        }
-
+        const completed = isStageCompleted(currentWorld, stage.id);
+        let unlocked = index === 0 || isStageCompleted(currentWorld, stages[index - 1].id);
+        const div = document.createElement("div");
+        div.className = `stage ${stage.class}`;
+        if (!unlocked) div.classList.add("locked");
+        if (completed) div.classList.add("completed");
         div.innerHTML = `
-
-            <div class="stage-icon">
-                ${stage.icon}
-            </div>
-
-            <div class="stage-name">
-                ${stage.name}
-            </div>
-
-            <div class="stage-info">
-
-                ${completed
-                    ? "✅ SELESAI"
-                    : unlocked
-                    ? `▶ Main • +${stage.xp} XP`
-                    : "🔒 Terkunci"
-                }
-
-            </div>
-
+            <div class="stage-icon">${stage.icon}</div>
+            <div class="stage-name">${stage.name}</div>
+            <div class="stage-info">${completed ? "✅ SELESAI" : unlocked ? `▶ Main • +${stage.xp} XP` : "🔒 Terkunci"}</div>
         `;
-
-        if (unlocked && !completed) {
-
-            div.onclick =
-                () => startStage(stage.id);
-
-        }
-
+        if (unlocked && !completed) div.onclick = () => startStage(stage.id);
         grid.appendChild(div);
-
     });
-
 }
-
-
-/* =========================================================
-START STAGE
-========================================================= */
 
 function startStage(stage) {
-
     currentStage = stage;
-
     currentQuestion = 0;
-
     stageScore = 0;
-
-    hintUsed = false;
-
     lives = 3;
-
-    stageMenu.classList.remove("active");
-
-    game.classList.add("active");
-
-    result.classList.remove("active");
-
+    document.getElementById("stageMenu").classList.remove("active");
+    document.getElementById("game").classList.add("active");
     loadQuestion();
-
 }
-
-
-/* =========================================================
-LOAD QUESTION
-========================================================= */
 
 function loadQuestion() {
-
-    const questions =
-        worlds[currentWorld][currentStage];
-
-    const q =
-        questions[currentQuestion];
-
-    const difficultyNames = {
-
-        easy: "🟢 MUDAH",
-
-        medium: "🟡 SEDERHANA",
-
-        boss: "🔴 BOSS"
-
-    };
-
-    document.getElementById(
-        "gameWorldTitle"
-    ).textContent =
-        `${worlds[currentWorld].icon} ${worlds[currentWorld].name}`;
-
-    document.getElementById(
-        "questionNumber"
-    ).textContent =
-        `Soalan ${currentQuestion + 1} / ${questions.length}`;
-
-    const difficulty =
-        document.getElementById("difficulty");
-
-    difficulty.textContent =
-        difficultyNames[currentStage];
-
-    difficulty.className =
-        `difficulty ${currentStage}`;
-
-    document.getElementById(
-        "question"
-    ).textContent =
-        q.q;
-
-    const answers =
-        document.getElementById("answers");
-
+    const q = worlds[currentWorld][currentStage][currentQuestion];
+    document.getElementById("gameWorldTitle").textContent = `${worlds[currentWorld].icon} ${worlds[currentWorld].name}`;
+    document.getElementById("questionNumber").textContent = `Soalan ${currentQuestion + 1} / ${worlds[currentWorld][currentStage].length}`;
+    document.getElementById("question").textContent = q.q;
+    const answers = document.getElementById("answers");
     answers.innerHTML = "";
-
-    q.a.forEach((answer, index) => {
-
-        const button =
-            document.createElement("button");
-
-        button.className =
-            "answer";
-
-        button.textContent =
-            answer;
-
-        button.onclick =
-            () => checkAnswer(index, button);
-
-        answers.appendChild(button);
-
+    q.a.forEach((ans, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "answer";
+        btn.textContent = ans;
+        btn.onclick = () => checkAnswer(idx, btn);
+        answers.appendChild(btn);
     });
-
-    document.getElementById(
-        "feedback"
-    ).textContent = "";
-
-    document.getElementById(
-        "nextBtn"
-    ).style.display = "none";
-
-    document.getElementById(
-        "hintBox"
-    ).classList.remove("show");
-
+    document.getElementById("feedback").textContent = "";
+    document.getElementById("nextBtn").style.display = "none";
+    document.getElementById("hintBox").classList.remove("show");
     updateStats();
-
 }
-
-
-/* =========================================================
-CHECK ANSWER
-========================================================= */
 
 function checkAnswer(selected, button) {
-
-    const questions =
-        worlds[currentWorld][currentStage];
-
-    const q =
-        questions[currentQuestion];
-
-    const buttons =
-        document.querySelectorAll(".answer");
-
-    buttons.forEach(btn => {
-
-        btn.disabled = true;
-
-    });
-
+    const q = worlds[currentWorld][currentStage][currentQuestion];
+    const buttons = document.querySelectorAll(".answer");
+    buttons.forEach(b => b.disabled = true);
 
     if (selected === q.correct) {
-
         button.classList.add("correct");
-
         stageScore++;
-
-        let earnedXP = 5;
-
-        if (currentStage === "easy") {
-
-            earnedXP = 5;
-
-        }
-
-        if (currentStage === "medium") {
-
-            earnedXP = 10;
-
-        }
-
-        if (currentStage === "boss") {
-
-            earnedXP = 15;
-
-        }
-
+        let earnedXP = currentStage === "easy" ? 5 : currentStage === "medium" ? 10 : 15;
         xp += earnedXP;
-
         score += earnedXP;
-
-        document.getElementById(
-            "feedback"
-        ).textContent =
-            `🎉 BETUL! +${earnedXP} XP`;
-
+        document.getElementById("feedback").textContent = `🎉 BETUL! +${earnedXP} XP`;
         saveProgress();
-
-        updateStats();
-
-        document.getElementById(
-            "nextBtn"
-        ).style.display =
-            "inline-block";
-
+        document.getElementById("nextBtn").style.display = "inline-block";
     } else {
-
         button.classList.add("wrong");
-
-        buttons[q.correct]
-            .classList.add("correct");
-
+        buttons[q.correct].classList.add("correct");
         lives--;
-
-        document.getElementById(
-            "feedback"
-        ).textContent =
-            "❌ Belum betul. Cuba lagi!";
-
-        if (lives <= 0) {
-
-            lives = 3;
-
-            document.getElementById(
-                "feedback"
-            ).textContent =
-                "❤️ Nyawa habis. Cuba semula!";
-
-        }
-
-        updateStats();
-
-        /*
-        PENTING:
-
-        Bila salah, kita BENARKAN
-        murid cuba soalan tersebut lagi.
-        */
-
+        document.getElementById("feedback").textContent = "❌ Belum betul. Cuba lagi!";
+        if (lives <= 0) lives = 3;
         setTimeout(() => {
-
-            buttons.forEach(btn => {
-
-                btn.disabled = false;
-
-                btn.classList.remove(
-                    "wrong",
-                    "correct"
-                );
-
-            });
-
-            document.getElementById(
-                "feedback"
-            ).textContent =
-                "💪 Cuba sekali lagi!";
-
+            buttons.forEach(b => { b.disabled = false; b.classList.remove("wrong", "correct"); });
+            document.getElementById("feedback").textContent = "💪 Cuba sekali lagi!";
         }, 1000);
-
     }
-
+    updateStats();
 }
-
-
-/* =========================================================
-NEXT QUESTION
-========================================================= */
 
 function nextQuestion() {
-
-    const questions =
-        worlds[currentWorld][currentStage];
-
     currentQuestion++;
-
-    if (
-        currentQuestion >=
-        questions.length
-    ) {
-
+    if (currentQuestion >= worlds[currentWorld][currentStage].length) {
         completeStage();
-
         return;
-
     }
-
     loadQuestion();
-
 }
-
-
-/* =========================================================
-COMPLETE STAGE
-========================================================= */
 
 function completeStage() {
-
-    markStageCompleted(
-        currentWorld,
-        currentStage
-    );
-
-    let bonusXP = 0;
-
-    if (currentStage === "easy") {
-
-        bonusXP = 20;
-
-    } else if (currentStage === "medium") {
-
-        bonusXP = 40;
-
-    } else {
-
-        bonusXP = 75;
-
-    }
-
-    xp += bonusXP;
-
-    score += bonusXP;
-
+    markStageCompleted(currentWorld, currentStage);
+    let bonus = currentStage === "easy" ? 20 : currentStage === "medium" ? 40 : 75;
+    xp += bonus; score += bonus;
     saveProgress();
-
-    game.classList.remove("active");
-
-    result.classList.add("active");
-
-    const percentage =
-        Math.round(
-            (stageScore /
-            worlds[currentWorld][currentStage].length)
-            * 100
-        );
-
-
-    if (currentStage === "easy") {
-
-        document.getElementById(
-            "resultIcon"
-        ).textContent = "🟢";
-
-        document.getElementById(
-            "resultTitle"
-        ).textContent =
-            "Stage Mudah Selesai!";
-
-        document.getElementById(
-            "resultMessage"
-        ).innerHTML =
-            `
-            Hebat ${playerName || "Murid"}! 🎉
-            <br><br>
-            Anda telah menguasai asas dunia ini.
-            <br>
-            <strong>Stage Sederhana telah dibuka! 🔓</strong>
-            `;
-
-        document.getElementById(
-            "continueBtn"
-        ).textContent =
-            "🟡 Ke Stage Sederhana";
-
-    }
-
-
-    else if (currentStage === "medium") {
-
-        document.getElementById(
-            "resultIcon"
-        ).textContent = "🟡";
-
-        document.getElementById(
-            "resultTitle"
-        ).textContent =
-            "Stage Sederhana Selesai!";
-
-        document.getElementById(
-            "resultMessage"
-        ).innerHTML =
-            `
-            Hebat! 🔥
-            <br><br>
-            Anda semakin dekat dengan Boss!
-            <br>
-            <strong>Stage BOSS telah dibuka! 🔓</strong>
-            `;
-
-        document.getElementById(
-            "continueBtn"
-        ).textContent =
-            "🔴 Lawan BOSS";
-
-    }
-
-
-    else {
-
-        document.getElementById(
-            "resultIcon"
-        ).textContent = "👑";
-
-        document.getElementById(
-            "resultTitle"
-        ).textContent =
-            "BOSS DIKALAHKAN!";
-
-        document.getElementById(
-            "resultMessage"
-        ).innerHTML =
-            `
-            🎉 TAHNIAH!
-            <br><br>
-            Anda berjaya menguasai:
-            <br>
-            <strong>
-            ${worlds[currentWorld].name}
-            </strong>
-            <br><br>
-            Dunia seterusnya telah dibuka! 🔓
-            `;
-
-        document.getElementById(
-            "continueBtn"
-        ).textContent =
-            "➡️ Dunia Seterusnya";
-
-    }
-
-
-    document.getElementById(
-        "finalScore"
-    ).textContent =
-        stageScore * 10;
-
-    document.getElementById(
-        "finalXP"
-    ).textContent =
-        bonusXP;
-
-    document.getElementById(
-        "badge"
-    ).textContent =
-        `🏅 ${getBadge(percentage)}`;
-
+    document.getElementById("game").classList.remove("active");
+    document.getElementById("result").classList.add("active");
+    document.getElementById("finalScore").textContent = stageScore * 10;
+    document.getElementById("finalXP").textContent = bonus;
     updateStats();
-
 }
-
-
-/* =========================================================
-CONTINUE
-========================================================= */
-
-function continueAdventure() {
-
-    result.classList.remove("active");
-
-    if (currentStage === "easy") {
-
-        startStage("medium");
-
-        return;
-
-    }
-
-    if (currentStage === "medium") {
-
-        startStage("boss");
-
-        return;
-
-    }
-
-    if (currentStage === "boss") {
-
-        if (
-            currentWorld <
-            worlds.length - 1
-        ) {
-
-            currentWorld++;
-
-            openStageMenu(currentWorld);
-
-        } else {
-
-            showFinalChampion();
-
-        }
-
-    }
-
-}
-
-
-/* =========================================================
-FINAL CHAMPION
-========================================================= */
-
-function showFinalChampion() {
-
-    map.style.display = "none";
-
-    stageMenu.classList.remove("active");
-
-    game.classList.remove("active");
-
-    result.classList.add("active");
-
-    document.getElementById(
-        "resultIcon"
-    ).textContent =
-        "👑";
-
-    document.getElementById(
-        "resultTitle"
-    ).textContent =
-        "MATH LEGEND!";
-
-    document.getElementById(
-        "resultMessage"
-    ).innerHTML =
-        `
-        <strong>
-        TAHNIAH ${playerName || "MURID"}!
-        </strong>
-        <br><br>
-
-        Anda telah berjaya menamatkan
-        <strong>SEMUA DUNIA MATEMATIK TAHUN 6!</strong>
-
-        <br><br>
-
-        🔢 Nombor<br>
-        ➕ Operasi<br>
-        🍕 Pecahan<br>
-        🔵 Perpuluhan<br>
-        % Peratus<br>
-        💰 Wang<br>
-        ⏰ Masa<br>
-        📏 Ukuran<br>
-        📐 Ruang<br>
-        📊 Data<br>
-        🧠 Penyelesaian Masalah<br>
-        👑 Final Boss
-
-        <br><br>
-
-        <strong>
-        ANDA ADALAH MATH LEGEND! 🏆
-        </strong>
-        `;
-
-    document.getElementById(
-        "finalScore"
-    ).textContent =
-        score;
-
-    document.getElementById(
-        "finalXP"
-    ).textContent =
-        xp;
-
-    document.getElementById(
-        "badge"
-    ).textContent =
-        "👑 MATH LEGEND";
-
-    document.getElementById(
-        "continueBtn"
-    ).textContent =
-        "🗺️ Lihat Peta";
-
-    document.getElementById(
-        "continueBtn"
-    ).onclick =
-        backToMap;
-
-}
-
-
-/* =========================================================
-HINT
-========================================================= */
-
-function showHint() {
-
-    const questions =
-        worlds[currentWorld][currentStage];
-
-    const q =
-        questions[currentQuestion];
-
-    const box =
-        document.getElementById("hintBox");
-
-    box.textContent =
-        `💡 Hint: ${q.hint}`;
-
-    box.classList.add("show");
-
-}
-
-
-/* =========================================================
-BADGE
-========================================================= */
-
-function getBadge(percentage) {
-
-    if (percentage === 100) {
-
-        return "PERFECT MASTER 🌟";
-
-    }
-
-    if (percentage >= 80) {
-
-        return "MATH HERO 🦸";
-
-    }
-
-    if (percentage >= 60) {
-
-        return "MATH EXPLORER 🧭";
-
-    }
-
-    return "BRAVE LEARNER 💪";
-
-}
-
-
-/* =========================================================
-COMPLETION
-========================================================= */
-
-function markStageCompleted(world, stage) {
-
-    if (!completedStages[world]) {
-
-        completedStages[world] = {};
-
-    }
-
-    completedStages[world][stage] = true;
-
-}
-
-
-function isStageCompleted(world, stage) {
-
-    return (
-        completedStages[world] &&
-        completedStages[world][stage]
-    );
-
-}
-
-
-function isWorldCompleted(world) {
-
-    return (
-        isStageCompleted(world, "easy") &&
-        isStageCompleted(world, "medium") &&
-        isStageCompleted(world, "boss")
-    );
-
-}
-
-
-/* =========================================================
-SAVE
-========================================================= */
-
-function saveProgress() {
-
-    localStorage.setItem(
-        "mathXP",
-        xp
-    );
-
-    localStorage.setItem(
-        "mathScore",
-        score
-    );
-
-    localStorage.setItem(
-        "mathLevel",
-        level
-    );
-
-    localStorage.setItem(
-        "completedStages",
-        JSON.stringify(completedStages)
-    );
-
-}
-
-
-/* =========================================================
-LEVEL
-========================================================= */
-
-function calculateLevel() {
-
-    if (xp >= 1000) {
-
-        level = 10;
-
-    } else if (xp >= 800) {
-
-        level = 9;
-
-    } else if (xp >= 650) {
-
-        level = 8;
-
-    } else if (xp >= 500) {
-
-        level = 7;
-
-    } else if (xp >= 350) {
-
-        level = 6;
-
-    } else if (xp >= 250) {
-
-        level = 5;
-
-    } else if (xp >= 150) {
-
-        level = 4;
-
-    } else if (xp >= 100) {
-
-        level = 3;
-
-    } else if (xp >= 50) {
-
-        level = 2;
-
-    } else {
-
-        level = 1;
-
-    }
-
-}
-
-
-/* =========================================================
-UPDATE STATS
-========================================================= */
-
-function updateStats() {
-
-    calculateLevel();
-
-    document.getElementById(
-        "xp"
-    ).textContent =
-        xp;
-
-    document.getElementById(
-        "score"
-    ).textContent =
-        score;
-
-    document.getElementById(
-        "lives"
-    ).textContent =
-        lives;
-
-    document.getElementById(
-        "level"
-    ).textContent =
-        level;
-
-    let completedWorldCount = 0;
-
-    worlds.forEach((world, index) => {
-
-        if (isWorldCompleted(index)) {
-
-            completedWorldCount++;
-
-        }
-
-    });
-
-    const progress =
-        (completedWorldCount /
-        worlds.length) * 100;
-
-    document.getElementById(
-        "progressBar"
-    ).style.width =
-        progress + "%";
-
-}
-
-
-/* =========================================================
-BACK TO MAP
-========================================================= */
 
 function backToMap() {
-
-    game.classList.remove("active");
-
-    result.classList.remove("active");
-
-    stageMenu.classList.remove("active");
-
-    map.style.display = "block";
-
+    document.getElementById("game").classList.remove("active");
+    document.getElementById("result").classList.remove("active");
+    document.getElementById("stageMenu").classList.remove("active");
+    document.getElementById("map").style.display = "block";
     renderWorlds();
-
 }
 
-
-/* =========================================================
-RESET GAME
-========================================================= */
-
-function resetGame() {
-
-    const confirmReset =
-        confirm(
-            "Adakah anda pasti mahu reset semua progress?"
-        );
-
-    if (!confirmReset) return;
-
-    localStorage.removeItem("mathXP");
-
-    localStorage.removeItem("mathScore");
-
-    localStorage.removeItem("mathLevel");
-
-    localStorage.removeItem("completedStages");
-
-    xp = 0;
-
-    score = 0;
-
-    level = 1;
-
-    lives = 3;
-
-    completedStages = {};
-
-    backToMap();
-
+function showHint() {
+    const q = worlds[currentWorld][currentStage][currentQuestion];
+    const box = document.getElementById("hintBox");
+    box.textContent = `💡 Hint: ${q.hint}`;
+    box.classList.add("show");
 }
 
+function markStageCompleted(w, s) {
+    if (!completedStages[w]) completedStages[w] = {};
+    completedStages[w][s] = true;
+}
+function isStageCompleted(w, s) { return completedStages[w] && completedStages[w][s]; }
+function isWorldCompleted(w) { return isStageCompleted(w, "easy") && isStageCompleted(w, "medium") && isStageCompleted(w, "boss"); }
 
-/* =========================================================
-START
-========================================================= */
+function saveProgress() {
+    localStorage.setItem("mathXP", xp);
+    localStorage.setItem("mathScore", score);
+    localStorage.setItem("mathLevel", level);
+    localStorage.setItem("completedStages", JSON.stringify(completedStages));
+    syncFirebaseData();
+}
+
+function calculateLevel() {
+    level = Math.floor(xp / 100) + 1;
+}
+
+function updateStats() {
+    calculateLevel();
+    document.getElementById("xp").textContent = xp;
+    document.getElementById("score").textContent = score;
+    document.getElementById("lives").textContent = lives;
+    document.getElementById("level").textContent = level;
+}
 
 renderWorlds();
-
-updateStats();
-
 </script>
-
 </body>
 </html>
