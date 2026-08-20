@@ -1956,15 +1956,35 @@ function nextQuestion() {
 }
 
 function completeStage() {
-    markStageCompleted(currentWorld, currentStage);
-    let bonus = currentStage === "easy" ? 20 : currentStage === "medium" ? 40 : 75;
-    xp += bonus; score += bonus;
-    saveProgress();
-    document.getElementById("game").classList.remove("active");
-    document.getElementById("result").classList.add("active");
-    document.getElementById("finalScore").textContent = stageScore * 10;
-    document.getElementById("finalXP").textContent = bonus;
-    updateStats();
+    try {
+        markStageCompleted(currentWorld, currentStage);
+        
+        let bonus = currentStage === "easy" ? 20 : currentStage === "medium" ? 40 : 75;
+        xp += bonus; 
+        score += bonus;
+        
+        saveProgress(); // Menyimpan ke localStorage & Firebase
+        
+        // Tukar paparan tetingkap
+        const gameElem = document.getElementById("game");
+        const resultElem = document.getElementById("result");
+        
+        if (gameElem) gameElem.classList.remove("active");
+        if (resultElem) resultElem.classList.add("active");
+        
+        // Kemaskini teks markah
+        const finalScoreElem = document.getElementById("finalScore");
+        const finalXPElem = document.getElementById("finalXP");
+        
+        if (finalScoreElem) finalScoreElem.textContent = stageScore * 10;
+        if (finalXPElem) finalXPElem.textContent = bonus;
+        
+        updateStats();
+    } catch (error) {
+        console.error("Ralat dalam completeStage:", error);
+        alert("Berjaya menyelesaikan stage! (Kembali ke peta)");
+        backToMap(); // Kembali ke peta jika paparan result gagal dibuka
+    }
 }
 
 function backToMap() {
