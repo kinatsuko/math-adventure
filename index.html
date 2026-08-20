@@ -1729,9 +1729,13 @@ document.getElementById("playerName").value = playerName;
 function savePlayer() {
     const name = document.getElementById("playerName").value.trim();
     if (!name) { alert("Sila masukkan nama murid."); return; }
+    
     playerName = name;
     localStorage.setItem("mathPlayerName", playerName);
     document.getElementById("playerMessage").textContent = " ✅ Nama disimpan!";
+    
+    // Semak data lama di Firebase dahulu, kemudian baru sync
+    loadPlayerDataFromFirebase(playerName);
     syncFirebaseData();
 }
 
@@ -1755,23 +1759,31 @@ function toggleLeaderboard() {
 }
 
 function fetchLeaderboard() {
-    db.collection("students").orderBy("score", "desc").limit(20).get().then((querySnapshot) => {
+    // Menggunakan onSnapshot untuk mendengar perubahan data secara live
+    db.collection("students")
+      .orderBy("score", "desc")
+      .limit(20)
+      .onSnapshot((querySnapshot) => {
         let html = "";
         let rank = 1;
+        
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             html += `<tr>
                 <td><strong>#${rank++}</strong></td>
-                <td>${data.name}</td>
-                <td>${data.score}</td>
-                <td>${data.xp}</td>
-                <td>Lvl ${data.level}</td>
+                <td>${data.name || 'Murid'}</td>
+                <td>${data.score || 0}</td>
+                <td>${data.xp || 0}</td>
+                <td>Lvl ${data.level || 1}</td>
             </tr>`;
         });
-        document.getElementById("leaderboardData").innerHTML = html || "<tr><td colspan='5'>Tiada data lagi.</td></tr>";
+        
+        document.getElementById("leaderboardData").innerHTML = 
+            html || "<tr><td colspan='5'>Tiada data lagi.</td></tr>";
+    }, (error) => {
+        console.error("Ralat Firestore Leaderboard:", error);
     });
 }
-
 function toggleQR() {
     const qrBox = document.getElementById("qrBox");
     qrBox.classList.toggle("active");
@@ -1958,6 +1970,34 @@ function updateStats() {
     document.getElementById("lives").textContent = lives;
     document.getElementById("level").textContent = level;
 }
+
+ function loadPlayerDataFromFirebase(name) {
+    if (!name) return;
+    
+    db.collection("students").doc(name).get().then((doc) => {
+        if (doc.exists) {
+            const data = doc.data();
+            // Ambil markah tertinggi/terkini dari Firebase jika ada
+            xp = data.xp || xp;
+            score = data.score || score;
+            level = data.level || level;
+            
+            // Simpan semula ke localStorage
+            localStorage.setItem("mathXP", xp);
+            localStorage.setItem("mathScore", score);
+            localStorage.setItem("mathLevel", level);
+            
+            updateStats();
+        }
+    }).catch((error) => {
+        console.error("Gagal muat data murid:", error);
+    });
+}
+
+// Panggil fungsi ini jika nama murid sudah wujud
+if (playerName) {
+    loadPlayerDataFromFirebase(playerName);
+}       
 
 renderWorlds();
 </script>
