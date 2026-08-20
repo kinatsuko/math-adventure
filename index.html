@@ -226,6 +226,50 @@ const db = firebase.firestore();
 /* =========================================================
 DATA DUNIA (ISIKAN ATAU KEKALKAN DATA SOALAN LENGKAP)
 ========================================================= */
+
+    // Rujukan ke simpulan 'scores' dalam Firebase
+const leaderboardRef = database.ref('scores').orderByChild('score').limitToLast(10);
+
+// Mendengar perubahan data secara masa nyata (Live)
+leaderboardRef.on('value', (snapshot) => {
+  const leaderboardContainer = document.getElementById('leaderboard-list'); // Tukar ID mengikut HTML anda
+  leaderboardContainer.innerHTML = ''; // Bersihkan senarai lama
+
+  if (snapshot.exists()) {
+    const players = [];
+
+    // Mengumpul data pemain
+    snapshot.forEach((childSnapshot) => {
+      players.push({
+        id: childSnapshot.key,
+        ...childSnapshot.val()
+      });
+    });
+
+    // Oleh kerana limitToLast menyusun secara menaik (paling rendah ke tinggi),
+    // kita terbalikkan tatasusunan (reverse) supaya markah tertinggi di atas.
+    players.reverse();
+
+    // Paparkan setiap pemain ke dalam UI / HTML
+    players.forEach((player, index) => {
+      const row = document.createElement('div');
+      row.className = 'leaderboard-row';
+      row.innerHTML = `
+        <span>#${index + 1}</span>
+        <span>${player.name || 'Pemain'}</span>
+        <span>${player.score} Markah</span>
+      `;
+      leaderboardContainer.appendChild(row);
+    });
+
+  } else {
+    leaderboardContainer.innerHTML = '<p>Tiada data rekod lagi.</p>';
+  }
+}, (error) => {
+  console.error("Ralat membaca data Firebase:", error);
+});
+
+    
 const worlds = [
 
 {
