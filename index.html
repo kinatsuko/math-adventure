@@ -1883,7 +1883,8 @@ function renderStages() {
             <div class="stage-name">${stage.name}</div>
             <div class="stage-info">${completed ? "✅ SELESAI" : unlocked ? `▶ Main • +${stage.xp} XP` : "🔒 Terkunci"}</div>
         `;
-        if (unlocked && !completed) div.onclick = () => startStage(stage.id);
+        // Buang syarat '!completed' supaya stage yang dah selesai tetap boleh ditekan
+if (unlocked) div.onclick = () => startStage(stage.id);
         grid.appendChild(div);
     });
 }
